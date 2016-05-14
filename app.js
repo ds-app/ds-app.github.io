@@ -67,20 +67,6 @@
 
 	"use strict";
 
-	__webpack_require__(1).service("Time", TimeService);
-
-	/* @ngInject */
-	function TimeService() {
-
-	    var svc = this;
-	}
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
 	MainCtrl.$inject = ["Time"];
 	__webpack_require__(1).directive("dsMain", MainDirective);
 
@@ -97,7 +83,7 @@
 	}
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -115,6 +101,20 @@
 	        templateUrl: "views/workBtn.tpl.html",
 	        controller: WorkBtnCtrl
 	    };
+	}
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	__webpack_require__(1).service("Time", TimeService);
+
+	/* @ngInject */
+	function TimeService() {
+
+	    var svc = this;
 	}
 
 /***/ }
