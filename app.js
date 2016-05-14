@@ -68,73 +68,6 @@
 
 	"use strict";
 
-	MainCtrl.$inject = ["Time", "Sample"];
-	__webpack_require__(1).directive("dsMain", MainDirective);
-
-	/* @ngInject */
-	function MainCtrl(Time, Sample) {
-	    var main = this;
-
-	    main.sample = Sample.map(Time.getWorkingTime);
-	}
-
-	/* @ngInject */
-	function MainDirective() {
-	    return {
-	        restrict: "E",
-	        templateUrl: "views/main.tpl.html",
-	        controller: MainCtrl,
-	        controllerAs: "main"
-	    };
-	}
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	__webpack_require__(1).value("Sample", [{
-	    "workDate": "2016-05-11",
-	    "first": "2016-05-10T21:00:31.000Z",
-	    "last": "2016-05-11T18:00:31.000Z",
-	    "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
-	    "type": "8h"
-	}, {
-	    "workDate": "2016-05-12",
-	    "first": "2016-05-12T00:00:23.000Z",
-	    "last": "2016-05-12T12:00:31.000Z",
-	    "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
-	    "type": "8h"
-	}]);
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	WorkBtnCtrl.$inject = ["Time"];
-	__webpack_require__(1).directive("dsWorkBtn", WorkBtnDirective);
-
-	/* @ngInject */
-	function WorkBtnCtrl(Time) {}
-
-	/* @ngInject */
-	function WorkBtnDirective() {
-	    return {
-	        restrict: "E",
-	        templateUrl: "views/workBtn.tpl.html",
-	        controller: WorkBtnCtrl
-	    };
-	}
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
 	__webpack_require__(1).service("Time", TimeService);
 
 	var WORK_TYPE = {
@@ -249,12 +182,80 @@
 
 	        return {
 	            date: workDate,
+	            type: work.type,
 	            total: diff,
 	            working: working,
 	            effective: effect,
 	            extra: extra
 	        };
 	    }
+	}
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	MainCtrl.$inject = ["Time", "Sample"];
+	__webpack_require__(1).directive("dsMain", MainDirective);
+
+	/* @ngInject */
+	function MainCtrl(Time, Sample) {
+	    var main = this;
+
+	    main.sample = Sample.map(Time.getWorkingTime);
+	}
+
+	/* @ngInject */
+	function MainDirective() {
+	    return {
+	        restrict: "E",
+	        templateUrl: "views/main.tpl.html",
+	        controller: MainCtrl,
+	        controllerAs: "main"
+	    };
+	}
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	__webpack_require__(1).value("Sample", [{
+	    "workDate": "2016-05-11",
+	    "first": "2016-05-10T21:00:31.000Z",
+	    "last": "2016-05-11T18:00:31.000Z",
+	    "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
+	    "type": "8h"
+	}, {
+	    "workDate": "2016-05-12",
+	    "first": "2016-05-12T00:00:23.000Z",
+	    "last": "2016-05-12T12:00:31.000Z",
+	    "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
+	    "type": "8h"
+	}]);
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	WorkBtnCtrl.$inject = ["Time"];
+	__webpack_require__(1).directive("dsWorkBtn", WorkBtnDirective);
+
+	/* @ngInject */
+	function WorkBtnCtrl(Time) {}
+
+	/* @ngInject */
+	function WorkBtnDirective() {
+	    return {
+	        restrict: "E",
+	        templateUrl: "views/workBtn.tpl.html",
+	        controller: WorkBtnCtrl
+	    };
 	}
 
 /***/ }
