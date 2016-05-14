@@ -115,6 +115,7 @@ function TimeService() {
 
         return {
             date : workDate,
+            type : work.type,
             total : diff,
             working : working,
             effective : effect,
