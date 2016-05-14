@@ -1,3 +1,24 @@
+@import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css);
+@import "macro";
+
+
+html {
+  @include vendor-prefix(text-size-adjust, 100%); /* Prevent font scaling in landscape while allowing user zoom */
+}
+
 body {
   margin: 0;
+  @include vendor-prefix(user-select, none);
+}
+
+
+.workBtn {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background-color: red;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  cursor: pointer;
 }

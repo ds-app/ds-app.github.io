@@ -13,7 +13,7 @@ function MainCtrl(Time) {
 function MainDirective() {
     return {
         restrict : "E",
-        templateUrl : "main/main.tpl.html",
+        templateUrl : "views/main.tpl.html",
         controller : MainCtrl
     }
 }
