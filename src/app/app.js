@@ -1,4 +1,8 @@
-module.exports = angular.module("DongSuApp", [
+module.exports = angular.module("DongsuApp", [
     'templates-html',
-    'ngTouch'
-]);
+    'ngTouch',
+    'rx'
+]).config(/* @ngInject */ function ($compileProvider, $httpProvider) {
+    $compileProvider.debugInfoEnabled(false);
+    $httpProvider.useApplyAsync(true);
+});
