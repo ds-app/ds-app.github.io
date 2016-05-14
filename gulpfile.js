@@ -14,6 +14,18 @@ var html2js = require('gulp-ng-html2js');
 var annotate = require('gulp-ng-annotate');
 
 
+
+
+
+function errHandler() {
+    this.emit("end");
+}
+
+function errHandlerWithLog(err) {
+    console.log(err.toString());
+    this.emit("end");
+}
+
 gulp.task("index", function () {
     gulp.src(config.app.index, {
         base : "src"
@@ -35,6 +47,7 @@ gulp.task("libraries", function () {
 gulp.task("styles", function () {
     gulp.src(config.app.styles)
         .pipe(sass.sync())
+        .on("error", errHandlerWithLog)
         .pipe(cssmin())
         .pipe(rename("main.min.css"))
         .pipe(gulp.dest('dist'));
@@ -50,6 +63,7 @@ gulp.task("templates", function () {
         .pipe(html2js({
             moduleName: "templates-html"
         }))
+        .on("error", errHandlerWithLog)
         .pipe(concat("templates.min.js"))
         .pipe(uglify())
         .pipe(gulp.dest("dist"));
@@ -79,7 +93,9 @@ gulp.task("pack", function () {
                 filename: 'app.js'
             }
         }))
+        .on("error", errHandler)
         .pipe(annotate())
+        .on("error", errHandler)
         .pipe(gulp.dest('dist'))
         .pipe(uglify())
         .pipe(rename("app.min.js"))
