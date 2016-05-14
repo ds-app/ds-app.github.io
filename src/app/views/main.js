@@ -4,8 +4,10 @@ require("app")
 
 
 /* @ngInject */
-function MainCtrl(Time) {
+function MainCtrl(Time, Sample) {
+    var main = this;
 
+    main.sample = Sample.map(Time.getWorkingTime);
 }
 
 
@@ -14,6 +16,7 @@ function MainDirective() {
     return {
         restrict : "E",
         templateUrl : "views/main.tpl.html",
-        controller : MainCtrl
+        controller : MainCtrl,
+        controllerAs : "main"
     }
 }
