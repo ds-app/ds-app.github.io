@@ -4,11 +4,12 @@
 
 html {
   @include vendor-prefix(text-size-adjust, 100%); /* Prevent font scaling in landscape while allowing user zoom */
+  @include vendor-prefix(user-select, none);
 }
 
 body {
   margin: 0;
-  @include vendor-prefix(user-select, none);
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 
