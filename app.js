@@ -48,7 +48,12 @@
 	__webpack_require__(2);
 	__webpack_require__(3);
 	__webpack_require__(4);
-	module.exports = __webpack_require__(5);
+	__webpack_require__(5);
+	__webpack_require__(6);
+	__webpack_require__(7);
+	__webpack_require__(8);
+	__webpack_require__(9);
+	module.exports = __webpack_require__(10);
 
 
 /***/ },
@@ -64,6 +69,21 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	__webpack_require__(1).filter("time", TimeFilter);
+
+	/* @ngInject */
+	function TimeFilter() {
+	    return function (value) {
+	        return moment(0).utc().add(value, 'm').format('HH:mm');
+	    };
+	}
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -192,7 +212,56 @@
 	}
 
 /***/ },
-/* 3 */
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	__webpack_require__(1).directive("dsBoard", BoardDirective);
+
+	/* @ngInject */
+	function BoardCtrl() {
+	    var board = this;
+	}
+
+	/* @ngInject */
+	function BoardDirective() {
+	    return {
+	        restrict: "E",
+	        templateUrl: "views/board.tpl.html",
+	        controller: BoardCtrl,
+	        controllerAs: "board"
+	    };
+	}
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	ExceptsCtrl.$inject = ["Sample"];
+	__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+
+	/* @ngInject */
+	function ExceptsCtrl(Sample) {
+	    var excepts = this;
+
+	    excepts.data = Sample[0].excepts;
+	}
+
+	/* @ngInject */
+	function ExceptsDirective() {
+	    return {
+	        restrict: "E",
+	        templateUrl: "views/excepts.tpl.html",
+	        controller: ExceptsCtrl,
+	        controllerAs: "excepts"
+	    };
+	}
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -218,7 +287,7 @@
 	}
 
 /***/ },
-/* 4 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -227,7 +296,7 @@
 	    "workDate": "2016-05-11",
 	    "first": "2016-05-10T21:00:31.000Z",
 	    "last": "2016-05-11T18:00:31.000Z",
-	    "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
+	    "excepts": [{ label: 0, time: 25 }, { label: 1, time: 73 }],
 	    "type": "8h"
 	}, {
 	    "workDate": "2016-05-12",
@@ -238,7 +307,53 @@
 	}]);
 
 /***/ },
-/* 5 */
+/* 8 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	__webpack_require__(1).directive("dsSummaries", SummariesDirective);
+
+	/* @ngInject */
+	function SummariesCtrl() {
+	    var summaries = this;
+	}
+
+	/* @ngInject */
+	function SummariesDirective() {
+	    return {
+	        restrict: "E",
+	        templateUrl: "views/summaries.tpl.html",
+	        controller: SummariesCtrl,
+	        controllerAs: "summaries"
+	    };
+	}
+
+/***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	__webpack_require__(1).directive("dsWeek", WeekDirective);
+
+	/* @ngInject */
+	function WeekCtrl() {
+	    var week = this;
+	}
+
+	/* @ngInject */
+	function WeekDirective() {
+	    return {
+	        restrict: "E",
+	        templateUrl: "views/week.tpl.html",
+	        controller: WeekCtrl,
+	        controllerAs: "week"
+	    };
+	}
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
