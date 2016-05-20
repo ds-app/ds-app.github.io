@@ -240,8 +240,7 @@
 
 	"use strict";
 
-	ExceptsCtrl.$inject = ["Sample"];
-	__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+	ExceptsCtrl.$inject = ["Sample"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
 
 	/* @ngInject */
 	function ExceptsCtrl(Sample) {
@@ -266,8 +265,7 @@
 
 	"use strict";
 
-	MainCtrl.$inject = ["Time", "Sample"];
-	__webpack_require__(1).directive("dsMain", MainDirective);
+	MainCtrl.$inject = ["Time", "Sample"];__webpack_require__(1).directive("dsMain", MainDirective);
 
 	/* @ngInject */
 	function MainCtrl(Time, Sample) {
@@ -358,8 +356,7 @@
 
 	"use strict";
 
-	WorkBtnCtrl.$inject = ["Time"];
-	__webpack_require__(1).directive("dsWorkBtn", WorkBtnDirective);
+	WorkBtnCtrl.$inject = ["Time"];__webpack_require__(1).directive("dsWorkBtn", WorkBtnDirective);
 
 	/* @ngInject */
 	function WorkBtnCtrl(Time) {}
