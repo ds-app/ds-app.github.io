@@ -53,7 +53,8 @@
 	__webpack_require__(7);
 	__webpack_require__(8);
 	__webpack_require__(9);
-	module.exports = __webpack_require__(10);
+	__webpack_require__(10);
+	module.exports = __webpack_require__(11);
 
 
 /***/ },
@@ -217,6 +218,36 @@
 
 	"use strict";
 
+	WeekService.$inject = ["Time"];__webpack_require__(1).service("Week", WeekService);
+
+	/* @ngInject */
+	function WeekService(Time) {
+
+	    var svc = this;
+
+	    svc.week = week;
+
+	    /////////////////
+
+	    function week() {
+
+	        var today = moment(Time.getWorkDate()),
+	            offset = (today.day() + 6) % 7,
+	            first = today.subtract(offset, 'd');
+
+	        return first.format('YYYY-MM-DD');
+
+	        // 금 5
+	        // 월 1
+	    }
+	}
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
 	__webpack_require__(1).directive("dsBoard", BoardDirective);
 
 	/* @ngInject */
@@ -235,7 +266,7 @@
 	}
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -260,7 +291,7 @@
 	}
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -285,7 +316,7 @@
 	}
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -305,7 +336,7 @@
 	}]);
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -328,16 +359,18 @@
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	__webpack_require__(1).directive("dsWeek", WeekDirective);
+	WeekCtrl.$inject = ["Week"];__webpack_require__(1).directive("dsWeek", WeekDirective);
 
 	/* @ngInject */
-	function WeekCtrl() {
+	function WeekCtrl(Week) {
 	    var week = this;
+
+	    console.log(Week.week());
 	}
 
 	/* @ngInject */
@@ -351,7 +384,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
