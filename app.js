@@ -54,7 +54,8 @@
 	__webpack_require__(8);
 	__webpack_require__(9);
 	__webpack_require__(10);
-	module.exports = __webpack_require__(11);
+	__webpack_require__(11);
+	module.exports = __webpack_require__(12);
 
 
 /***/ },
@@ -74,7 +75,7 @@
 
 	"use strict";
 
-	__webpack_require__(1).filter("time", TimeFilter);
+	__webpack_require__(1).filter("time", TimeFilter).filter("minute", MinuteFilter).filter("date", DateFilter);
 
 	/* @ngInject */
 	function TimeFilter() {
@@ -83,8 +84,93 @@
 	    };
 	}
 
+	/* @ngInject */
+	function MinuteFilter() {
+	    return function (value) {
+	        if (!value) {
+	            return;
+	        }
+	        return moment(value).format('HH:mm');
+	    };
+	}
+
+	/* @ngInject */
+	function DateFilter() {
+	    return function (value) {
+	        if (!value) {
+	            return;
+	        }
+	        return moment(value).format('MM-DD');
+	    };
+	}
+
 /***/ },
 /* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	__webpack_require__(1).value("Sample", {
+	    "2016-05-19": {
+	        "first": "2016-05-18T21:00:31.000Z",
+	        "last": "2016-05-19T18:00:31.000Z",
+	        "excepts": [{ label: 0, time: 25 }, { label: 1, time: 73 }],
+	        "type": "8h"
+	    },
+	    "2016-05-20": {
+	        "first": "2016-05-20T00:00:23.000Z",
+	        "last": "2016-05-20T12:00:31.000Z",
+	        "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
+	        "type": "8h"
+	    }
+	});
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Storage.$inject = ["Week", "Time", "Sample"];__webpack_require__(1).service("Storage", Storage);
+
+	/* @ngInject */
+	function Storage(Week, Time, Sample) {
+
+	    var storage = this;
+
+	    storage.load = load;
+
+	    //////////////////////
+
+	    function newWork(date) {
+	        var day = moment(date).day();
+
+	        if (day == 0 || day == 6) {
+	            return {
+	                "excepts": [],
+	                "type": "0h"
+	            };
+	        } else {
+	            return {
+	                "excepts": [],
+	                "type": "8h"
+	            };
+	        }
+	    }
+
+	    function load() {
+	        return _(Week.workWeek()).map(function (date) {
+	            return _.extend({}, Sample[date] || newWork(date), {
+	                workDate: date
+	            });
+	        }).map(function (work) {
+	            return _.extend(work, Time.getWorkingTime(work));
+	        }).value();
+	    }
+	}
+
+/***/ },
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -175,6 +261,20 @@
 	    }
 
 	    function getWorkingTime(work) {
+
+	        if (!work.first || !work.last) {
+	            return {
+	                total: 0,
+	                working: 0,
+	                effective: 0,
+	                extra: 0
+	            };
+	        }
+
+	        return calWorkingTime(work);
+	    }
+
+	    function calWorkingTime(work) {
 	        var first = moment(work.first),
 	            last = moment(work.last),
 	            workDate = getWorkDate(first),
@@ -202,8 +302,6 @@
 	        extra = work.type == WORK_TYPE.HOLIDAY ? holidayTime(effect) : overtime(effect);
 
 	        return {
-	            date: workDate,
-	            type: work.type,
 	            total: diff,
 	            working: working,
 	            effective: effect,
@@ -213,7 +311,7 @@
 	}
 
 /***/ },
-/* 4 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -225,25 +323,27 @@
 
 	    var svc = this;
 
-	    svc.week = week;
+	    svc.workWeek = workWeek;
 
 	    /////////////////
 
-	    function week() {
+	    function workWeek(offset) {
 
-	        var today = moment(Time.getWorkDate()),
-	            offset = (today.day() + 6) % 7,
-	            first = today.subtract(offset, 'd');
+	        offset = offset || 0;
 
-	        return first.format('YYYY-MM-DD');
+	        var m = moment(Time.getWorkDate());
 
-	        // 금 5
-	        // 월 1
+	        m.subtract((m.day() + 6) % 7, 'd');
+	        m.add(offset * 7, 'd');
+
+	        return _(7).range().map(function (day) {
+	            return moment(m).add(day, 'd').format('YYYY-MM-DD');
+	        }).value();
 	    }
 	}
 
 /***/ },
-/* 5 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -266,18 +366,18 @@
 	}
 
 /***/ },
-/* 6 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	ExceptsCtrl.$inject = ["Sample"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+	ExceptsCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
 
 	/* @ngInject */
-	function ExceptsCtrl(Sample) {
+	function ExceptsCtrl(Storage) {
 	    var excepts = this;
 
-	    excepts.data = Sample[0].excepts;
+	    excepts.data = Storage.load()[0].excepts;
 	}
 
 	/* @ngInject */
@@ -291,18 +391,17 @@
 	}
 
 /***/ },
-/* 7 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	MainCtrl.$inject = ["Time", "Sample"];__webpack_require__(1).directive("dsMain", MainDirective);
+	MainCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsMain", MainDirective);
 
 	/* @ngInject */
-	function MainCtrl(Time, Sample) {
-	    var main = this;
+	function MainCtrl(Storage) {
 
-	    main.sample = Sample.map(Time.getWorkingTime);
+	    var main = this;
 	}
 
 	/* @ngInject */
@@ -316,27 +415,7 @@
 	}
 
 /***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	__webpack_require__(1).value("Sample", [{
-	    "workDate": "2016-05-11",
-	    "first": "2016-05-10T21:00:31.000Z",
-	    "last": "2016-05-11T18:00:31.000Z",
-	    "excepts": [{ label: 0, time: 25 }, { label: 1, time: 73 }],
-	    "type": "8h"
-	}, {
-	    "workDate": "2016-05-12",
-	    "first": "2016-05-12T00:00:23.000Z",
-	    "last": "2016-05-12T12:00:31.000Z",
-	    "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
-	    "type": "8h"
-	}]);
-
-/***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -359,18 +438,19 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	WeekCtrl.$inject = ["Week"];__webpack_require__(1).directive("dsWeek", WeekDirective);
+	WeekCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsWeek", WeekDirective);
 
 	/* @ngInject */
-	function WeekCtrl(Week) {
+	function WeekCtrl(Storage) {
+
 	    var week = this;
 
-	    console.log(Week.week());
+	    week.thisWeek = Storage.load();
 	}
 
 	/* @ngInject */
@@ -384,7 +464,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
