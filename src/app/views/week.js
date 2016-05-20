@@ -4,10 +4,11 @@ require("app")
 
 
 /* @ngInject */
-function WeekCtrl(Week) {
+function WeekCtrl(Storage) {
+
     var week = this;
 
-    console.log(Week.week());
+    week.thisWeek = Storage.load();
 }
 
 

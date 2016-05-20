@@ -86,7 +86,22 @@ function TimeService() {
         }
     }
 
+
     function getWorkingTime(work) {
+
+        if (!work.first || !work.last) {
+            return {
+                total : 0,
+                working : 0,
+                effective : 0,
+                extra : 0
+            }
+        }
+
+        return calWorkingTime(work);
+    }
+
+    function calWorkingTime(work) {
         var first = moment(work.first),
             last = moment(work.last),
             workDate = getWorkDate(first),
@@ -114,8 +129,6 @@ function TimeService() {
         extra = (work.type == WORK_TYPE.HOLIDAY) ? holidayTime(effect) : overtime(effect);
 
         return {
-            date : workDate,
-            type : work.type,
             total : diff,
             working : working,
             effective : effect,

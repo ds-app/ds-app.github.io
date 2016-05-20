@@ -4,10 +4,10 @@ require("app")
 
 
 /* @ngInject */
-function ExceptsCtrl(Sample) {
+function ExceptsCtrl(Storage) {
     var excepts = this;
 
-    excepts.data = Sample[0].excepts;
+    excepts.data = Storage.load()[0].excepts;
 }
 
 

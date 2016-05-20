@@ -8,23 +8,21 @@ function WeekService(Time) {
 
     var svc = this;
 
-    svc.week = week;
+    svc.workWeek = workWeek;
 
     /////////////////
 
-    function week() {
+    function workWeek(offset) {
 
-        var today = moment(Time.getWorkDate()),
-            offset = (today.day() + 6) % 7,
-            first = today.subtract(offset, 'd');
+        offset = offset || 0;
 
+        var m = moment(Time.getWorkDate());
 
+        m.subtract(((m.day() + 6) % 7), 'd');
+        m.add(offset * 7, 'd');
 
-
-        return first.format('YYYY-MM-DD');
-
-        // 금 5
-        // 월 1
-
+        return _(7).range().map(day => {
+            return moment(m).add(day, 'd').format('YYYY-MM-DD');
+        }).value();
     }
 }

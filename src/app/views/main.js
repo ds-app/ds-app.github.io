@@ -4,10 +4,9 @@ require("app")
 
 
 /* @ngInject */
-function MainCtrl(Time, Sample) {
-    var main = this;
+function MainCtrl(Storage) {
 
-    main.sample = Sample.map(Time.getWorkingTime);
+    var main = this;
 }
 
 
