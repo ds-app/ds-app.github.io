@@ -1,17 +1,20 @@
 var gulp = require('gulp');
-var config = require('./gulp.config.json');
+var config = require('./conf/gulp.config.json');
+var webpackConfig = require("./conf/webpack.config.js");
 
 var concat = require('gulp-concat');
 var rename = require('gulp-rename');
+var gutil = require("gulp-util");
 
 var uglify = require('gulp-uglify');
 var htmlmin = require('gulp-htmlmin');
 var sass = require('gulp-sass');
 var cssmin = require('gulp-clean-css');
-
-var webpack = require('gulp-webpack');
 var html2js = require('gulp-ng-html2js');
-var annotate = require('gulp-ng-annotate');
+
+var webpack = require("webpack");
+var webpackStream = require("webpack-stream");
+var WebpackDevServer = require("webpack-dev-server");
 
 
 
@@ -71,30 +74,7 @@ gulp.task("templates", function () {
 
 gulp.task("pack", function () {
     gulp.src(config.app.js)
-        .pipe(webpack({
-            resolve: {
-                alias: {
-                    app: __dirname + "/src/app/app.js"
-                }
-            },
-            module: {
-                loaders: [
-                    {
-                        test: /\.js$/,
-                        exclude: /(node_modules)/,
-                        loader: 'babel',
-                        query: {
-                            presets: ['es2015']
-                        }
-                    }
-                ]
-            },
-            output: {
-                filename: 'app.js'
-            }
-        }))
-        .on("error", errHandler)
-        .pipe(annotate())
+        .pipe(webpackStream(webpackConfig))
         .on("error", errHandler)
         .pipe(gulp.dest('dist'))
         .pipe(uglify())
@@ -113,4 +93,32 @@ gulp.task("watch", ["default"], function () {
     gulp.watch(config.app.images, ["images"]);
     gulp.watch(config.app.index, ["index"]);
     gulp.watch(config.app.libraries, ["libraries"]);
+});
+
+
+/** Webpack Dev Server **/
+gulp.task("serve", ["build", "watch"], function() {
+    // modify some webpack config options
+    var options = Object.create(webpackConfig);
+    
+    options.devtool = "eval";
+    options.debug = true;
+
+    gutil.log("Starting [webpack-dev-server]...");
+
+    // Start a webpack-dev-server
+    return new WebpackDevServer(webpack(options), {
+        contentBase: "./dist",
+        stats: {
+            hash: false,
+            version: false,
+            colors: true,
+            chunks: false
+        }
+    }).listen(8080, "localhost", function(err) {
+        if (err) {
+            throw new gutil.PluginError("webpack-dev-server", err);
+        }
+        gutil.log("[webpack-dev-server]", "Server is Running on http://localhost:8090/webpack-dev-server/index.html");
+    });
 });
