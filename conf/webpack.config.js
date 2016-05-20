@@ -5,6 +5,7 @@ var tool = require("./tool.js");
 var webpackConfig = {
     entry: tool.globs(config.app.js),
     output: {
+        path: tool.base("dist"),
         filename: 'app.js'
     },
     resolve: {

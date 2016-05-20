@@ -4,8 +4,10 @@ require("app")
 
 
 /* @ngInject */
-function WeekCtrl() {
+function WeekCtrl(Week) {
     var week = this;
+
+    console.log(Week.week());
 }
 
 
