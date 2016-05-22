@@ -55,7 +55,8 @@
 	__webpack_require__(9);
 	__webpack_require__(10);
 	__webpack_require__(11);
-	module.exports = __webpack_require__(12);
+	__webpack_require__(12);
+	module.exports = __webpack_require__(13);
 
 
 /***/ },
@@ -100,7 +101,7 @@
 	        if (!value) {
 	            return;
 	        }
-	        return moment(value).format('MM-DD');
+	        return moment(value).format('MM/DD');
 	    };
 	}
 
@@ -465,6 +466,34 @@
 
 /***/ },
 /* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	__webpack_require__(1).directive("dsWork", WorkDirective);
+
+	/* @ngInject */
+	function WorkCtrl() {
+	    var work = this;
+	}
+
+	/* @ngInject */
+	function WorkDirective() {
+	    return {
+	        restrict: "A",
+	        templateUrl: "views/work.tpl.html",
+	        scope: {
+	            work: "=dsWork"
+	        },
+	        replace: true,
+	        controller: WorkCtrl,
+	        controllerAs: "work",
+	        bindToController: true
+	    };
+	}
+
+/***/ },
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
