@@ -4,10 +4,17 @@ require("app")
 
 
 /* @ngInject */
-function ExceptsCtrl(Storage) {
-    var excepts = this;
+function ExceptsCtrl($scope) {
+    var excepts = this,
+        work = $scope.work.work;
 
-    excepts.data = Storage.load()[0].excepts;
+    excepts.getTotal = getTotal;
+
+    ////////////////////
+
+    function getTotal() {
+        return _.sumBy(work.excepts, 'time');
+    }
 }
 
 

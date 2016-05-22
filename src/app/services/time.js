@@ -130,6 +130,7 @@ function TimeService() {
 
         return {
             total : diff,
+            digested : digested,
             working : working,
             effective : effect,
             extra : extra

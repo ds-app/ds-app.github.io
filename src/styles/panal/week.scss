@@ -1,0 +1,44 @@
+.week {
+
+  img {
+    width: 20px;
+    margin: 0 5px;
+    float: right;
+  }
+
+  .work {
+    width: 100%;
+
+    &> div {
+      display: inline-block;
+      padding-top: 10px;
+    }
+
+    &> div:nth-child(1) { width: 16%; }
+    &> div:nth-child(2) { width: 16%; }
+    &> div:nth-child(3) { width: 16%; }
+    &> div:nth-child(4) { width: 30%; }
+    &> div:nth-child(5) { width: 7%; }
+    &> div:nth-child(6) { width: 7%; }
+    &> div:nth-child(7) {
+      width: 8%;
+      img {
+        width: 12px;
+      }
+    }
+
+    &> div.extra {
+      font-size: .9em;
+      background-color: #384A59;
+      width: 100%;
+      padding: 10px;
+
+      img {
+        width: 14px;
+        margin: 4px 5px;
+      }
+
+      @import "excepts";
+    }
+  }
+}

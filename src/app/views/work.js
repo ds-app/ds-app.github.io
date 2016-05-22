@@ -6,6 +6,15 @@ require("app")
 /* @ngInject */
 function WorkCtrl() {
     var work = this;
+
+    work.flip = true;
+    work.toggle = toggle;
+
+    //////////////////////////////
+
+    function toggle() {
+        work.flip = !work.flip;
+    }
 }
 
 

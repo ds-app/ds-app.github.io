@@ -19,10 +19,13 @@ body {
   /* font-family: 'Noto Sans KR', sans-serif; */
 }
 
-div {
-  padding-top: 3px;
-}
 
+
+.label {
+  padding: 0 10px;
+  margin: 0 5px;
+  border-radius: 30px;
+}
 
 .tray {
   margin: 0;
@@ -45,12 +48,6 @@ div {
     font-weight: bold;
   }
 
-  &.excepts {
-    background-color: #BF4B4B;
-    color: #F2F2F2;
-    font-weight: bold;
-  }
-
   &.week {
     background-color: #30404D;
     color: #F2F2F2;
@@ -62,28 +59,8 @@ div {
   }
 }
 
-.week {
 
-  img {
-    width: 20px;
-    margin: 0 5px 0 5px;
-    float: right;
-  }
-
-  .work {
-    width: 100%;
-
-    div {
-      display: inline-block;
-    }
-
-    div:nth-child(1) { width: 20%; }
-    div:nth-child(2) { width: 20%; }
-    div:nth-child(3) { width: 20%; }
-    div:nth-child(4) { width: 20%; }
-    div:nth-child(5) { width: 10%; }
-  }
-}
+@import "panal/week";
 
 
 .workBtn {
@@ -95,6 +72,7 @@ div {
   height: 50px;
   border-radius: 25px;
   cursor: pointer;
+  opacity: .6;
 
   img {
     width: 50px;

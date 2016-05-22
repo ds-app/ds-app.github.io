@@ -1,8 +1,14 @@
 <div class="work">
+
     <div>{{::work.work.workDate | date}}</div>
     <div>{{work.work.first | minute}}</div>
     <div>{{work.work.last | minute}}</div>
-    <div>{{work.work.working | time}}</div>
+    <div>{{work.work.working | time}} ({{work.work.effective | time}})</div>
     <div>+{{work.work.extra}}</div>
     <div>{{work.work.type}}</div>
+    <div ng-click="work.toggle()"><img src="images/elipsis.png" /></div>
+
+    <div class="extra" ng-hide="!!work.flip">
+        <ds-excepts></ds-excepts>
+    </div>
 </div>

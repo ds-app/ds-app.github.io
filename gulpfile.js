@@ -54,7 +54,7 @@ gulp.task("libraries", function () {
 });
 
 gulp.task("styles", function () {
-    gulp.src(config.app.styles)
+    gulp.src("src/styles/main.scss")
         .pipe(sass.sync())
         .on("error", errHandlerWithLog)
         .pipe(cssmin())
