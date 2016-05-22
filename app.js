@@ -56,7 +56,8 @@
 	__webpack_require__(10);
 	__webpack_require__(11);
 	__webpack_require__(12);
-	module.exports = __webpack_require__(13);
+	__webpack_require__(13);
+	module.exports = __webpack_require__(14);
 
 
 /***/ },
@@ -114,15 +115,23 @@
 	__webpack_require__(1).value("Sample", {
 	    "2016-05-19": {
 	        "first": "2016-05-18T21:00:31.000Z",
-	        "last": "2016-05-19T18:00:31.000Z",
+	        "last": "2016-05-19T17:38:31.000Z",
 	        "excepts": [{ label: 0, time: 25 }, { label: 1, time: 73 }],
 	        "type": "8h"
 	    },
 	    "2016-05-20": {
 	        "first": "2016-05-20T00:00:23.000Z",
-	        "last": "2016-05-20T12:00:31.000Z",
+	        "last": "2016-05-20T12:22:31.000Z",
 	        "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
 	        "type": "8h"
+	    }
+	}).value("Labels", {
+	    "0": {
+	        name: "기타"
+	    },
+	    "1": {
+	        name: "헬스",
+	        color: "#C05B4B"
 	    }
 	});
 
@@ -304,6 +313,7 @@
 
 	        return {
 	            total: diff,
+	            digested: digested,
 	            working: working,
 	            effective: effect,
 	            extra: extra
@@ -372,13 +382,20 @@
 
 	"use strict";
 
-	ExceptsCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+	ExceptsCtrl.$inject = ["$scope"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
 
 	/* @ngInject */
-	function ExceptsCtrl(Storage) {
-	    var excepts = this;
+	function ExceptsCtrl($scope) {
+	    var excepts = this,
+	        work = $scope.work.work;
 
-	    excepts.data = Storage.load()[0].excepts;
+	    excepts.getTotal = getTotal;
+
+	    ////////////////////
+
+	    function getTotal() {
+	        return _.sumBy(work.excepts, 'time');
+	    }
 	}
 
 	/* @ngInject */
@@ -393,6 +410,42 @@
 
 /***/ },
 /* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	LabelCtrl.$inject = ["$scope", "$element", "$attrs", "Labels"];__webpack_require__(1).directive("dsLabel", LabelDirective);
+
+	/* @ngInject */
+	function LabelCtrl($scope, $element, $attrs, Labels) {
+
+	    var ctrl = this,
+	        label = Labels[$scope.$eval($attrs["label"])];
+
+	    activate();
+
+	    ///////////////
+
+	    function activate() {
+	        ctrl.name = label.name;
+	        $element.css({
+	            "background-color": label.color || "#90AFAA"
+	        });
+	    }
+	}
+
+	/* @ngInject */
+	function LabelDirective() {
+	    return {
+	        template: '<span class="label">{{label.name}}</span>',
+	        replace: true,
+	        controller: LabelCtrl,
+	        controllerAs: "label"
+	    };
+	}
+
+/***/ },
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -416,7 +469,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -439,7 +492,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -465,7 +518,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -475,6 +528,15 @@
 	/* @ngInject */
 	function WorkCtrl() {
 	    var work = this;
+
+	    work.flip = true;
+	    work.toggle = toggle;
+
+	    //////////////////////////////
+
+	    function toggle() {
+	        work.flip = !work.flip;
+	    }
 	}
 
 	/* @ngInject */
@@ -493,7 +555,7 @@
 	}
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
