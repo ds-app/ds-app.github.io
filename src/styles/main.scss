@@ -1,6 +1,10 @@
 /* @import url(http://fonts.googleapis.com/earlyaccess/notosanskr.css); */
 @import "macro";
+@import "font";
 
+* {
+  box-sizing: border-box;
+}
 
 html {
   @include vendor-prefix(text-size-adjust, 100%); /* Prevent font scaling in landscape while allowing user zoom */
@@ -9,7 +13,76 @@ html {
 
 body {
   margin: 0;
+  width: 100%;
+  background-color: #514E48;
+  font-family: 'Open Sans Condensed', 'Noto Sans KR', sans-serif;
   /* font-family: 'Noto Sans KR', sans-serif; */
+}
+
+div {
+  padding-top: 3px;
+}
+
+
+.tray {
+  margin: 0;
+  padding: 0;
+}
+
+.panal {
+  padding: 10px;
+
+
+  &.board {
+    background-color: #F2BF91;
+    color: #F2F2F2;
+    font-weight: bold;
+  }
+
+  &.summaries {
+    background-color: #728C80;
+    color: #F2F2F2;
+    font-weight: bold;
+  }
+
+  &.excepts {
+    background-color: #BF4B4B;
+    color: #F2F2F2;
+    font-weight: bold;
+  }
+
+  &.week {
+    background-color: #30404D;
+    color: #F2F2F2;
+    font-weight: bold;
+  }
+
+  .header {
+    margin-bottom: 10px;
+  }
+}
+
+.week {
+
+  img {
+    width: 20px;
+    margin: 0 5px 0 5px;
+    float: right;
+  }
+
+  .work {
+    width: 100%;
+
+    div {
+      display: inline-block;
+    }
+
+    div:nth-child(1) { width: 20%; }
+    div:nth-child(2) { width: 20%; }
+    div:nth-child(3) { width: 20%; }
+    div:nth-child(4) { width: 20%; }
+    div:nth-child(5) { width: 10%; }
+  }
 }
 
 
@@ -17,9 +90,13 @@ body {
   position: fixed;
   right: 20px;
   bottom: 20px;
-  background-color: red;
+  background-color: #000000;
   width: 50px;
   height: 50px;
   border-radius: 25px;
   cursor: pointer;
+
+  img {
+    width: 50px;
+  }
 }

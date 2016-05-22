@@ -9,6 +9,9 @@
     "images" : [
       "src/images/**/*"
     ],
+    "font" : [
+      "src/font/**/*"
+    ],
     "templates" : [
       "src/app/**/*.tpl.html"
     ],

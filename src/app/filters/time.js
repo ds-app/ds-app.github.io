@@ -29,6 +29,6 @@ function DateFilter() {
         if (!value) {
             return;
         }
-        return moment(value).format('MM-DD');
+        return moment(value).format('MM/DD');
     }
 }

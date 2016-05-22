@@ -41,6 +41,12 @@ gulp.task("images", function () {
     }).pipe(gulp.dest('dist'));
 });
 
+gulp.task("font", function () {
+    gulp.src(config.app.font, {
+        base : "src"
+    }).pipe(gulp.dest('dist'));
+});
+
 gulp.task("libraries", function () {
     gulp.src(config.app.libraries, {
         base : "src"
@@ -84,7 +90,7 @@ gulp.task("pack", function () {
 
 gulp.task("build", ["styles", "templates", "pack"]);
 
-gulp.task("default", ["index", "images", "libraries", "build"]);
+gulp.task("default", ["index", "images", "font", "libraries", "build"]);
 
 gulp.task("watch", ["default"], function () {
     gulp.watch(config.app.js, ["pack"]);

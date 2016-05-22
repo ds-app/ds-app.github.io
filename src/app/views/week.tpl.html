@@ -1,24 +1,11 @@
-<div>
-    <table>
-        <thead>
-            <tr>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr ng-repeat="work in week.thisWeek track by work.workDate">
-                <td>{{::work.workDate | date}}</td>
-                <td>{{work.first | minute}}</td>
-                <td>{{work.last | minute}}</td>
-                <td>{{work.working | time}}</td>
-                <td>+{{work.extra}}</td>
-                <td>{{work.type}}</td>
-            </tr>
-        </tbody>
-    </table>
+<div class="week panal">
+    <div class="header">
+        Week
+        <img src="images/tool.png"/>
+        <img src="images/draw.png"/>
+    </div>
+
+
+    <div ng-repeat="work in week.thisWeek track by work.workDate" ds-work="work"></div>
+
 </div>
