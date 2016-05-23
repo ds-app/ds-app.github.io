@@ -4,7 +4,7 @@ require("app")
 
 
 /* @ngInject */
-function ExceptsCtrl($scope, Util) {
+function ExceptsCtrl($scope, Util, Storage) {
     var excepts = this,
         work = $scope.work.work;
 
@@ -31,11 +31,13 @@ function ExceptsCtrl($scope, Util) {
     }
     
     function setFirst(value) {
-        return excepts.first = Util.minute(work.first = setTime(value, work.first));
+        work.first = setTime(value, work.first);
+        return Storage.update(work);
     }
     
     function setLast(value) {
-        return excepts.last = Util.minute(work.last = setTime(value, work.last));
+        work.last = setTime(value, work.last);
+        return Storage.update(work);
     }
 }
 

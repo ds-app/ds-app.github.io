@@ -12,12 +12,16 @@
   }
   
   input[type=time] {
-    font-family: arial, sans-serif;
-    background-color: #384A59;
+    background: none;
     color: #F2F2F2;
     font-weight: bold;
     font-family: 'Open Sans Condensed', 'Noto Sans KR', sans-serif;
     border: none;
     font-size: 1em;
+    -webkit-appearance:none;
+    
+    &.modify {
+      color: #F2BF91;
+    }
   }
 }

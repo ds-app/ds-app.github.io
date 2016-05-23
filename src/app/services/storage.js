@@ -10,6 +10,7 @@ function Storage(Week, Time, Sample) {
 
 
     storage.load = load;
+    storage.update = update;
 
 
     //////////////////////
@@ -38,6 +39,10 @@ function Storage(Week, Time, Sample) {
         }).map(work => {
             return _.extend(work, Time.getWorkingTime(work));
         }).value();
+    }
+    
+    function update(work) {
+        return _.extend(work, Time.getWorkingTime(work));
     }
 
 }
