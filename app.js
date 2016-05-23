@@ -113,15 +113,15 @@
 	"use strict";
 
 	__webpack_require__(1).value("Sample", {
-	    "2016-05-19": {
-	        "first": "2016-05-18T21:00:31.000Z",
-	        "last": "2016-05-19T17:38:31.000Z",
+	    "2016-05-23": {
+	        "first": "2016-05-22T21:00:31.000Z",
+	        "last": "2016-05-23T17:38:31.000Z",
 	        "excepts": [{ label: 0, time: 25 }, { label: 1, time: 73 }],
 	        "type": "8h"
 	    },
-	    "2016-05-20": {
-	        "first": "2016-05-20T00:00:23.000Z",
-	        "last": "2016-05-20T12:22:31.000Z",
+	    "2016-05-24": {
+	        "first": "2016-05-24T00:00:23.000Z",
+	        "last": "2016-05-24T12:22:31.000Z",
 	        "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
 	        "type": "8h"
 	    }
@@ -146,7 +146,8 @@
 	/* @ngInject */
 	function Storage(Week, Time, Sample) {
 
-	    var storage = this;
+	    var storage = this,
+	        WORK_TYPE = Time.WORK_TYPE;
 
 	    storage.load = load;
 
@@ -158,12 +159,12 @@
 	        if (day == 0 || day == 6) {
 	            return {
 	                "excepts": [],
-	                "type": "0h"
+	                "type": WORK_TYPE.DAY_OFF
 	            };
 	        } else {
 	            return {
 	                "excepts": [],
-	                "type": "8h"
+	                "type": WORK_TYPE.FULL
 	            };
 	        }
 	    }
@@ -188,6 +189,7 @@
 	__webpack_require__(1).service("Time", TimeService);
 
 	var WORK_TYPE = {
+	    "DAY_OFF": "NA",
 	    "HOLIDAY": "0h",
 	    "HALF": "4h",
 	    "FULL": "8h"
@@ -202,6 +204,8 @@
 	    svc.getWorkDate = getWorkDate;
 	    svc.getWorkingTime = getWorkingTime;
 
+	    svc.WORK_TYPE = WORK_TYPE;
+
 	    /////////////////////
 
 	    function getWorkDate(date) {
@@ -211,7 +215,7 @@
 
 	    function digestTime(time, type) {
 
-	        if (type == WORK_TYPE.FULL) {
+	        if (type != WORK_TYPE.DAY_OFF) {
 	            if (time < 0) {
 	                return 0;
 	            } else if (time < 240) {
@@ -229,10 +233,10 @@
 	    }
 
 	    function workingTime(digested, type) {
-	        if (type == WORK_TYPE.FULL || type == WORK_TYPE.HALF) {
-	            return Math.min(digested, 720);
-	        } else if (type == WORK_TYPE.HOLIDAY) {
+	        if (type == WORK_TYPE.DAY_OFF) {
 	            return 0;
+	        } else {
+	            return Math.min(digested, 720);
 	        }
 	    }
 
@@ -257,7 +261,7 @@
 	        }
 	    }
 
-	    function holidayTime(effective) {
+	    function dayOffTime(effective) {
 
 	        if (effective < 240) {
 	            return 0;
@@ -309,7 +313,7 @@
 	        digested = digestTime(diff, work.type);
 	        working = workingTime(digested, work.type);
 	        effect = effectTime(digested, work.excepts);
-	        extra = work.type == WORK_TYPE.HOLIDAY ? holidayTime(effect) : overtime(effect);
+	        extra = work.type == WORK_TYPE.DAY_OFF ? dayOffTime(effect) : overtime(effect);
 
 	        return {
 	            total: diff,
@@ -390,11 +394,16 @@
 	        work = $scope.work.work;
 
 	    excepts.getTotal = getTotal;
+	    excepts.change = change;
 
 	    ////////////////////
 
 	    function getTotal() {
 	        return _.sumBy(work.excepts, 'time');
+	    }
+
+	    function change(value) {
+	        console.log(value);
 	    }
 	}
 
