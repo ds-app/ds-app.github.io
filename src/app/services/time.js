@@ -2,6 +2,7 @@ require("app")
     .service("Time", TimeService);
 
 var WORK_TYPE = {
+        "DAY_OFF" : "NA",
         "HOLIDAY" : "0h",
         "HALF" : "4h",
         "FULL" : "8h"
@@ -17,6 +18,7 @@ function TimeService() {
     svc.getWorkDate = getWorkDate;
     svc.getWorkingTime = getWorkingTime;
 
+    svc.WORK_TYPE = WORK_TYPE;
 
 
     /////////////////////
@@ -28,7 +30,7 @@ function TimeService() {
 
     function digestTime(time, type) {
 
-        if (type == WORK_TYPE.FULL) {
+        if (type != WORK_TYPE.DAY_OFF) {
             if (time < 0) {
                 return 0;
             } else if (time < 240) {
@@ -47,10 +49,10 @@ function TimeService() {
     }
 
     function workingTime(digested, type) {
-        if (type == WORK_TYPE.FULL || type == WORK_TYPE.HALF) {
-            return Math.min(digested, 720);
-        } else if (type == WORK_TYPE.HOLIDAY) {
+        if (type == WORK_TYPE.DAY_OFF) {
             return 0;
+        } else  {
+            return Math.min(digested, 720);
         }
     }
 
@@ -73,7 +75,7 @@ function TimeService() {
         }
     }
 
-    function holidayTime(effective) {
+    function dayOffTime(effective) {
 
         if (effective < 240) {
             return 0;
@@ -126,7 +128,7 @@ function TimeService() {
         digested = digestTime(diff, work.type);
         working = workingTime(digested, work.type);
         effect = effectTime(digested, work.excepts);
-        extra = (work.type == WORK_TYPE.HOLIDAY) ? holidayTime(effect) : overtime(effect);
+        extra = (work.type == WORK_TYPE.DAY_OFF) ? dayOffTime(effect) : overtime(effect);
 
         return {
             total : diff,

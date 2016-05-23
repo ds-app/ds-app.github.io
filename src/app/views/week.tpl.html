@@ -2,9 +2,15 @@
     <div class="header">
         Week
         <img src="images/tool.png"/>
-        <img src="images/draw.png"/>
     </div>
 
+    <div class="work">
+        <div>DATE</div>
+        <div>WORK TIME</div>
+        <div>WORKED</div>
+        <div>TYPE</div>
+        <div>MORE</div>
+    </div>
 
     <div ng-repeat="work in week.thisWeek track by work.workDate" ds-work="work"></div>
 

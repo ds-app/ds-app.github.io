@@ -5,30 +5,24 @@ require("app")
 
 
 /* @ngInject */
-function TimeFilter() {
+function TimeFilter(Util) {
     return function (value) {
-        return moment(0).utc().add(value, 'm').format('HH:mm');
+        return Util.time(value);
     };
 }
 
 
 /* @ngInject */
-function MinuteFilter() {
+function MinuteFilter(Util) {
     return function (value) {
-        if (!value) {
-            return;
-        }
-        return moment(value).format('HH:mm');
-    }
+        return Util.minute(value);
+    };
 }
 
 
 /* @ngInject */
-function DateFilter() {
+function DateFilter(Util) {
     return function (value) {
-        if (!value) {
-            return;
-        }
-        return moment(value).format('MM/DD');
-    }
+        return Util.date(value);
+    };
 }

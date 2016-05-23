@@ -5,7 +5,8 @@ require("app")
 /* @ngInject */
 function Storage(Week, Time, Sample) {
 
-    var storage = this;
+    var storage = this,
+        WORK_TYPE = Time.WORK_TYPE;
 
 
     storage.load = load;
@@ -19,12 +20,12 @@ function Storage(Week, Time, Sample) {
         if (day == 0 || day == 6) {
             return {
                 "excepts": [],
-                "type": "0h"
+                "type": WORK_TYPE.DAY_OFF
             };
         } else {
             return {
                 "excepts": [],
-                "type": "8h"
+                "type": WORK_TYPE.FULL
             };
         }
     }

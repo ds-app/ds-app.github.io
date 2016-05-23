@@ -1,11 +1,23 @@
 .excepts {
-  .except {
+  .half {
     display : inline-block;
     width: 50%;
-
+  }
+  
+  .except {
     img {
       float: none;
       vertical-align: bottom;
     }
+  }
+  
+  input[type=time] {
+    font-family: arial, sans-serif;
+    background-color: #384A59;
+    color: #F2F2F2;
+    font-weight: bold;
+    font-family: 'Open Sans Condensed', 'Noto Sans KR', sans-serif;
+    border: none;
+    font-size: 1em;
   }
 }
