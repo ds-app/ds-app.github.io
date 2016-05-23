@@ -57,7 +57,9 @@
 	__webpack_require__(11);
 	__webpack_require__(12);
 	__webpack_require__(13);
-	module.exports = __webpack_require__(14);
+	__webpack_require__(14);
+	__webpack_require__(15);
+	module.exports = __webpack_require__(16);
 
 
 /***/ },
@@ -77,32 +79,28 @@
 
 	"use strict";
 
-	__webpack_require__(1).filter("time", TimeFilter).filter("minute", MinuteFilter).filter("date", DateFilter);
+	TimeFilter.$inject = ["Util"];
+	MinuteFilter.$inject = ["Util"];
+	DateFilter.$inject = ["Util"];__webpack_require__(1).filter("time", TimeFilter).filter("minute", MinuteFilter).filter("date", DateFilter);
 
 	/* @ngInject */
-	function TimeFilter() {
+	function TimeFilter(Util) {
 	    return function (value) {
-	        return moment(0).utc().add(value, 'm').format('HH:mm');
+	        return Util.time(value);
 	    };
 	}
 
 	/* @ngInject */
-	function MinuteFilter() {
+	function MinuteFilter(Util) {
 	    return function (value) {
-	        if (!value) {
-	            return;
-	        }
-	        return moment(value).format('HH:mm');
+	        return Util.minute(value);
 	    };
 	}
 
 	/* @ngInject */
-	function DateFilter() {
+	function DateFilter(Util) {
 	    return function (value) {
-	        if (!value) {
-	            return;
-	        }
-	        return moment(value).format('MM/DD');
+	        return Util.date(value);
 	    };
 	}
 
@@ -331,6 +329,43 @@
 
 	"use strict";
 
+	__webpack_require__(1).service("Util", Util);
+
+	/* @ngInject */
+	function Util() {
+	    var util = this;
+
+	    util.time = time;
+	    util.minute = minute;
+	    util.date = date;
+
+	    /////////////////////////
+
+	    function time(value, format) {
+	        return moment(0).utc().add(value, 'm').format(format || 'HH:mm');
+	    }
+
+	    function minute(value, format) {
+	        if (!value) {
+	            return;
+	        }
+	        return moment(value).format(format || 'HH:mm');
+	    }
+
+	    function date(value, format) {
+	        if (!value) {
+	            return;
+	        }
+	        return moment(value).format(format || 'MM/DD');
+	    }
+	}
+
+/***/ },
+/* 7 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
 	WeekService.$inject = ["Time"];__webpack_require__(1).service("Week", WeekService);
 
 	/* @ngInject */
@@ -358,7 +393,7 @@
 	}
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -381,20 +416,59 @@
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	ExceptsCtrl.$inject = ["$scope"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+	ChangeCtrl.$inject = ["$scope", "$element", "$attrs"];__webpack_require__(1).directive("dsChange", ChangeDirective);
 
 	/* @ngInject */
-	function ExceptsCtrl($scope) {
+	function ChangeCtrl($scope, $element, $attrs) {
+
+	    var handler = $attrs["dsChange"];
+
+	    $scope.$watch(function () {
+	        return $element.val();
+	    }, function (n, o) {
+	        if (n !== o) {
+	            $scope.$eval(handler, {
+	                $value: n
+	            });
+	        }
+	    });
+
+	    $element.on("change", function () {
+	        $scope.$apply();
+	    });
+	}
+
+	/* @ngInject */
+	function ChangeDirective() {
+	    return {
+	        restrict: "A",
+	        controller: ChangeCtrl
+	    };
+	}
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	ExceptsCtrl.$inject = ["$scope", "Util"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+
+	/* @ngInject */
+	function ExceptsCtrl($scope, Util) {
 	    var excepts = this,
 	        work = $scope.work.work;
 
+	    excepts.first = Util.minute(work.first);
+	    excepts.last = Util.minute(work.last);
 	    excepts.getTotal = getTotal;
-	    excepts.change = change;
+	    excepts.setFirst = setFirst;
+	    excepts.setLast = setLast;
 
 	    ////////////////////
 
@@ -402,8 +476,22 @@
 	        return _.sumBy(work.excepts, 'time');
 	    }
 
-	    function change(value) {
-	        console.log(value);
+	    function setTime(value, time) {
+	        var hm = moment(value, "HH:mm"),
+	            m = moment(time);
+
+	        m.hours(hm.hours());
+	        m.minutes(hm.minutes());
+
+	        return m.toISOString();
+	    }
+
+	    function setFirst(value) {
+	        return excepts.first = Util.minute(work.first = setTime(value, work.first));
+	    }
+
+	    function setLast(value) {
+	        return excepts.last = Util.minute(work.last = setTime(value, work.last));
 	    }
 	}
 
@@ -418,7 +506,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -454,7 +542,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -478,7 +566,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -501,7 +589,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -527,7 +615,7 @@
 	}
 
 /***/ },
-/* 13 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -564,7 +652,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
