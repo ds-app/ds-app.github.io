@@ -12,9 +12,21 @@ function Util() {
     
     /////////////////////////
     
+    function lzp(value) {
+        var str = "" + value;
+        return ("00" + str).substr(Math.min(str.length, 2));
+    }
     
-    function time(value, format) {
-        return moment(0).utc().add(value, 'm').format(format || 'HH:mm');
+    function time(value) {
+        if (!value) {
+            return;
+        }
+        var hours, minutes;
+        
+        hours = parseInt(value / 60);
+        minutes = value - (hours * 60);
+        
+        return lzp(hours) + ":" + lzp(minutes);
     }
     
     function minute(value, format) {

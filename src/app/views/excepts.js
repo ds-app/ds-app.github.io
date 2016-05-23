@@ -13,6 +13,12 @@ function ExceptsCtrl($scope, Util, Storage) {
     excepts.getTotal = getTotal;
     excepts.setFirst = setFirst;
     excepts.setLast = setLast;
+    
+    $scope.$watch('work.flip', n => {
+        if (!n && excepts.modify) {
+            excepts.modify = false;
+        }
+    });
 
     ////////////////////
 

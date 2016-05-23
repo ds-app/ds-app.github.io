@@ -6,7 +6,14 @@ require("app")
 function Storage(Week, Time, Sample) {
 
     var storage = this,
-        WORK_TYPE = Time.WORK_TYPE;
+        WORK_TYPE = Time.WORK_TYPE,
+        works = _(Week.workWeek()).map(date => {
+            return _.extend({}, Sample[date] || newWork(date), {
+                workDate : date
+            });
+        }).map(work => {
+            return _.extend(work, Time.getWorkingTime(work));
+        }).value();
 
 
     storage.load = load;
@@ -32,13 +39,7 @@ function Storage(Week, Time, Sample) {
     }
 
     function load() {
-        return _(Week.workWeek()).map(date => {
-            return _.extend({}, Sample[date] || newWork(date), {
-                workDate : date
-            });
-        }).map(work => {
-            return _.extend(work, Time.getWorkingTime(work));
-        }).value();
+        return works;
     }
     
     function update(work) {

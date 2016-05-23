@@ -1,0 +1,48 @@
+.board {
+  
+  .today {
+    text-align: center;
+    
+    span {
+      &:first-child {
+        font-size: 4em;
+      }
+    }
+  }
+  
+  .time-gauge {
+    div {
+      display: inline-block;
+    }
+    
+    .gauge-label {
+      width: 13%;
+      
+      &:last-child {
+        text-align: right;
+      }
+    }
+    
+    .gauge-wrap {
+      width: 74%;
+      
+      .gauge {
+        width: 50%;
+        height: .75em;
+
+        &:first-child {
+          background: repeating-linear-gradient(
+                          45deg,
+                          #606dbc,
+                          #606dbc 10px,
+                          #465298 10px,
+                          #465298 20px
+          );
+        }
+        &:last-child {
+          background-color: #514E48;
+        }
+      }
+    }
+  }
+}

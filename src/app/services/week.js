@@ -23,6 +23,6 @@ function WeekService(Time) {
 
         return _(7).range().map(day => {
             return moment(m).add(day, 'd').format('YYYY-MM-DD');
-        }).value();
+        }).reverse().value();
     }
 }

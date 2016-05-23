@@ -4,8 +4,59 @@ require("app")
 
 
 /* @ngInject */
-function BoardCtrl() {
-    var board = this;
+function BoardCtrl(Time, Storage) {
+    var board = this,
+        week = Storage.load(),
+        WORK_TYPE = Time.WORK_TYPE;
+    
+    board.today = pickToday();
+    board.getFullWorkingTime = getFullWorkingTime;
+    board.getTotalWorkedTime = getTotalWorkedTime;
+    board.getWorkedGauge = getWorkedGauge;
+    board.getRemainGauge = getRemainGauge;
+    
+    /////////////////
+    
+    function getFullWorkingTime() {
+        return _(week).map(work => work.type).map(type => {
+            switch (type) {
+                case WORK_TYPE.FULL:
+                    return 8 * 60;
+                case WORK_TYPE.HALF:
+                    return 4 * 60;
+                default:
+                    return 0;
+            }
+        }).sum();
+    }
+    
+    function getTotalWorkedTime() {
+        return _(week).map(work => work.working).sum();
+    }
+    
+    function getWorkedRate() {
+        return Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime());
+    }
+    
+    function getRemainRate() {
+        return 100 - getWorkedRate();
+    }
+
+    function getWorkedGauge() {
+        return {
+            width: getWorkedRate() + '%'
+        };
+    }
+
+    function getRemainGauge() {
+        return {
+            width: getRemainRate() + '%'
+        };
+    }
+    
+    function pickToday() {
+        return _.find(week, work => work.workDate == Time.getWorkDate());
+    }
 }
 
 

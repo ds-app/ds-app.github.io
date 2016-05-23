@@ -1,1 +1,18 @@
-<div class="board panal">Board</div>
+<div class="board panal">
+    <div class="header">
+        Dongsu 2.0
+    </div>
+    
+    <div class="today">
+        <span>{{board.today.working | time}}</span>
+    </div>
+    
+    <div class="time-gauge">
+        <div class="gauge-label">{{board.getTotalWorkedTime() | time}}</div>
+        <div class="gauge-wrap">
+            <div class="gauge" ng-style="board.getWorkedGauge()"></div>
+            <div class="gauge" ng-style="board.getRemainGauge()"></div>
+        </div>
+        <div class="gauge-label">{{board.getFullWorkingTime() - board.getTotalWorkedTime() | time}}</div>
+    </div>
+</div>

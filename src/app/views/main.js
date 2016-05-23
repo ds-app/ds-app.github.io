@@ -7,6 +7,8 @@ require("app")
 function MainCtrl(Storage) {
 
     var main = this;
+    
+    main.data = Storage.load();
 }
 
 
