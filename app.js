@@ -146,9 +146,17 @@
 	function Storage(Week, Time, Sample) {
 
 	    var storage = this,
-	        WORK_TYPE = Time.WORK_TYPE;
+	        WORK_TYPE = Time.WORK_TYPE,
+	        works = _(Week.workWeek()).map(function (date) {
+	        return _.extend({}, Sample[date] || newWork(date), {
+	            workDate: date
+	        });
+	    }).map(function (work) {
+	        return _.extend(work, Time.getWorkingTime(work));
+	    }).value();
 
 	    storage.load = load;
+	    storage.update = update;
 
 	    //////////////////////
 
@@ -169,13 +177,11 @@
 	    }
 
 	    function load() {
-	        return _(Week.workWeek()).map(function (date) {
-	            return _.extend({}, Sample[date] || newWork(date), {
-	                workDate: date
-	            });
-	        }).map(function (work) {
-	            return _.extend(work, Time.getWorkingTime(work));
-	        }).value();
+	        return works;
+	    }
+
+	    function update(work) {
+	        return _.extend(work, Time.getWorkingTime(work));
 	    }
 	}
 
@@ -342,8 +348,21 @@
 
 	    /////////////////////////
 
-	    function time(value, format) {
-	        return moment(0).utc().add(value, 'm').format(format || 'HH:mm');
+	    function lzp(value) {
+	        var str = "" + value;
+	        return ("00" + str).substr(Math.min(str.length, 2));
+	    }
+
+	    function time(value) {
+	        if (!value) {
+	            return;
+	        }
+	        var hours, minutes;
+
+	        hours = parseInt(value / 60);
+	        minutes = value - hours * 60;
+
+	        return lzp(hours) + ":" + lzp(minutes);
 	    }
 
 	    function minute(value, format) {
@@ -389,7 +408,7 @@
 
 	        return _(7).range().map(function (day) {
 	            return moment(m).add(day, 'd').format('YYYY-MM-DD');
-	        }).value();
+	        }).reverse().value();
 	    }
 	}
 
@@ -399,11 +418,68 @@
 
 	"use strict";
 
-	__webpack_require__(1).directive("dsBoard", BoardDirective);
+	BoardCtrl.$inject = ["Time", "Storage"];__webpack_require__(1).directive("dsBoard", BoardDirective);
 
 	/* @ngInject */
-	function BoardCtrl() {
-	    var board = this;
+	function BoardCtrl(Time, Storage) {
+	    var board = this,
+	        week = Storage.load(),
+	        WORK_TYPE = Time.WORK_TYPE;
+
+	    board.today = pickToday();
+	    board.getFullWorkingTime = getFullWorkingTime;
+	    board.getTotalWorkedTime = getTotalWorkedTime;
+	    board.getWorkedGauge = getWorkedGauge;
+	    board.getRemainGauge = getRemainGauge;
+
+	    /////////////////
+
+	    function getFullWorkingTime() {
+	        return _(week).map(function (work) {
+	            return work.type;
+	        }).map(function (type) {
+	            switch (type) {
+	                case WORK_TYPE.FULL:
+	                    return 8 * 60;
+	                case WORK_TYPE.HALF:
+	                    return 4 * 60;
+	                default:
+	                    return 0;
+	            }
+	        }).sum();
+	    }
+
+	    function getTotalWorkedTime() {
+	        return _(week).map(function (work) {
+	            return work.working;
+	        }).sum();
+	    }
+
+	    function getWorkedRate() {
+	        return Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime());
+	    }
+
+	    function getRemainRate() {
+	        return 100 - getWorkedRate();
+	    }
+
+	    function getWorkedGauge() {
+	        return {
+	            width: getWorkedRate() + '%'
+	        };
+	    }
+
+	    function getRemainGauge() {
+	        return {
+	            width: getRemainRate() + '%'
+	        };
+	    }
+
+	    function pickToday() {
+	        return _.find(week, function (work) {
+	            return work.workDate == Time.getWorkDate();
+	        });
+	    }
 	}
 
 	/* @ngInject */
@@ -483,10 +559,10 @@
 
 	"use strict";
 
-	ExceptsCtrl.$inject = ["$scope", "Util"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+	ExceptsCtrl.$inject = ["$scope", "Util", "Storage"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
 
 	/* @ngInject */
-	function ExceptsCtrl($scope, Util) {
+	function ExceptsCtrl($scope, Util, Storage) {
 	    var excepts = this,
 	        work = $scope.work.work;
 
@@ -495,6 +571,12 @@
 	    excepts.getTotal = getTotal;
 	    excepts.setFirst = setFirst;
 	    excepts.setLast = setLast;
+
+	    $scope.$watch('work.flip', function (n) {
+	        if (!n && excepts.modify) {
+	            excepts.modify = false;
+	        }
+	    });
 
 	    ////////////////////
 
@@ -513,11 +595,13 @@
 	    }
 
 	    function setFirst(value) {
-	        return work.first = setTime(value, work.first);
+	        work.first = setTime(value, work.first);
+	        return Storage.update(work);
 	    }
 
 	    function setLast(value) {
-	        return work.last = setTime(value, work.last);
+	        work.last = setTime(value, work.last);
+	        return Storage.update(work);
 	    }
 	}
 
@@ -579,6 +663,8 @@
 	function MainCtrl(Storage) {
 
 	    var main = this;
+
+	    main.data = Storage.load();
 	}
 
 	/* @ngInject */
@@ -620,14 +706,11 @@
 
 	"use strict";
 
-	WeekCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsWeek", WeekDirective);
+	__webpack_require__(1).directive("dsWeek", WeekDirective);
 
 	/* @ngInject */
-	function WeekCtrl(Storage) {
-
+	function WeekCtrl() {
 	    var week = this;
-
-	    week.thisWeek = Storage.load();
 	}
 
 	/* @ngInject */
