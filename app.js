@@ -59,7 +59,8 @@
 	__webpack_require__(13);
 	__webpack_require__(14);
 	__webpack_require__(15);
-	module.exports = __webpack_require__(16);
+	__webpack_require__(16);
+	module.exports = __webpack_require__(17);
 
 
 /***/ },
@@ -457,6 +458,31 @@
 
 	"use strict";
 
+	TimeValueCtrl.$inject = ["$scope", "$element", "$attrs"];__webpack_require__(1).directive("dsTimeValue", TimeValueDirective);
+
+	/* @ngInject */
+	function TimeValueCtrl($scope, $element, $attrs) {
+	    var tv = $attrs["dsTimeValue"];
+
+	    $scope.$watch(tv, function (n, o) {
+	        $element.val(n);
+	    });
+	}
+
+	/* @ngInject */
+	function TimeValueDirective() {
+	    return {
+	        restrict: "A",
+	        controller: TimeValueCtrl
+	    };
+	}
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
 	ExceptsCtrl.$inject = ["$scope", "Util"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
 
 	/* @ngInject */
@@ -487,11 +513,11 @@
 	    }
 
 	    function setFirst(value) {
-	        return excepts.first = Util.minute(work.first = setTime(value, work.first));
+	        return work.first = setTime(value, work.first);
 	    }
 
 	    function setLast(value) {
-	        return excepts.last = Util.minute(work.last = setTime(value, work.last));
+	        return work.last = setTime(value, work.last);
 	    }
 	}
 
@@ -506,7 +532,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -542,7 +568,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -566,7 +592,7 @@
 	}
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -589,7 +615,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -615,7 +641,7 @@
 	}
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -652,7 +678,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
