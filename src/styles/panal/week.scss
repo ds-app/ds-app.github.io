@@ -1,4 +1,39 @@
 .week {
+  
+  .mode {
+    width: 100%;
+
+    &> div {
+      display: inline-block;
+      padding-top: 10px;
+    }
+
+    &> div:nth-child(1) {
+      width: 15%;
+      text-align: center;
+
+      &.today {
+        color: #F2CA50;
+      }
+    }
+    &> div:nth-child(2) {
+      width: 85%;
+      text-align: center;
+      
+      > div {
+        display: inline-block;
+        width: 23%;
+        background-color: #514E48;
+        border-radius: 5px;
+        margin: 0 2px;
+        font-size: 0.9em;
+        
+        &.selected {
+          background-color: #728C80;
+        }
+      }
+    }
+  }
 
   .work {
     width: 100%;

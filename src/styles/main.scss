@@ -79,7 +79,9 @@ body {
   height: 50px;
   border-radius: 25px;
   cursor: pointer;
-  opacity: .6;
+  opacity: .7;
+  
+  @include vendor-prefix(box-shadow, #3b1c0a 0 3px 3px);
 
   img {
     width: 50px;

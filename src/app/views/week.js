@@ -6,6 +6,17 @@ require("app")
 /* @ngInject */
 function WeekCtrl() {
     var week = this;
+    
+    week.toggle = toggle;
+    week.edit = false;
+    
+    ////////////////////////////
+    
+    function toggle() {
+        week.edit = !week.edit;
+    }
+    
+    
 }
 
 

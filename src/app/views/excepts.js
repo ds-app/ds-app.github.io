@@ -20,6 +20,12 @@ function ExceptsCtrl($scope, Util, Storage) {
         }
     });
 
+    $scope.$watch('week.edit', n => {
+        if (!n && excepts.modify) {
+            excepts.modify = false;
+        }
+    });
+
     ////////////////////
 
     function getTotal() {

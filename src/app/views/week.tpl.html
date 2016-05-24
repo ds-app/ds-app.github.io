@@ -1,17 +1,27 @@
 <div class="week panal">
     <div class="header">
         Week
-        <img src="images/tool.png"/>
+        <img src="images/tool.png" ng-click="week.toggle()"/>
     </div>
 
-    <div class="work">
-        <div>DATE</div>
-        <div>WORK TIME</div>
-        <div>WORKED</div>
-        <div>TYPE</div>
-        <div>MORE</div>
+    <div ng-if="!week.edit">
+        <div class="work">
+            <div>DATE</div>
+            <div>WORK TIME</div>
+            <div>WORKED</div>
+            <div>TYPE</div>
+            <div>MORE</div>
+        </div>
+    
+        <div ng-repeat="work in main.data track by work.workDate" ds-work="work"></div>
     </div>
-
-    <div ng-repeat="work in main.data track by work.workDate" ds-work="work"></div>
-
+    
+    <div ng-if="week.edit">
+        <div class="mode">
+            <div>DATE</div>
+            <div>TYPE</div>
+        </div>
+        
+        <div ng-repeat="work in main.data track by work.workDate" ds-mode="work"></div>
+    </div>
 </div>
