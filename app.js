@@ -60,7 +60,8 @@
 	__webpack_require__(14);
 	__webpack_require__(15);
 	__webpack_require__(16);
-	module.exports = __webpack_require__(17);
+	__webpack_require__(17);
+	module.exports = __webpack_require__(18);
 
 
 /***/ },
@@ -578,6 +579,12 @@
 	        }
 	    });
 
+	    $scope.$watch('week.edit', function (n) {
+	        if (!n && excepts.modify) {
+	            excepts.modify = false;
+	        }
+	    });
+
 	    ////////////////////
 
 	    function getTotal() {
@@ -683,6 +690,61 @@
 
 	"use strict";
 
+	ModeCtrl.$inject = ["Time", "Util"];__webpack_require__(1).directive("dsMode", ModeDirective);
+
+	/* @ngInject */
+	function ModeCtrl(Time, Util) {
+	    var mode = this,
+	        today = mode.work.workDate == Time.getWorkDate();
+
+	    mode.isSelected = isSelected;
+	    mode.getDate = getDate;
+	    mode.isToday = isToday;
+	    mode.select = select;
+
+	    //////////////////////////////
+
+	    function isSelected(type) {
+	        return mode.work.type == type;
+	    }
+
+	    function getDate() {
+	        if (today) {
+	            return "Today";
+	        }
+	        return Util.date(mode.work.workDate);
+	    }
+
+	    function isToday() {
+	        return today;
+	    }
+
+	    function select(type) {
+	        return mode.work.type = type;
+	    }
+	}
+
+	/* @ngInject */
+	function ModeDirective() {
+	    return {
+	        restrict: "A",
+	        templateUrl: "views/mode.tpl.html",
+	        scope: {
+	            work: "=dsMode"
+	        },
+	        replace: true,
+	        controller: ModeCtrl,
+	        controllerAs: "mode",
+	        bindToController: true
+	    };
+	}
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
 	__webpack_require__(1).directive("dsSummaries", SummariesDirective);
 
 	/* @ngInject */
@@ -703,7 +765,7 @@
 	}
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -713,6 +775,15 @@
 	/* @ngInject */
 	function WeekCtrl() {
 	    var week = this;
+
+	    week.toggle = toggle;
+	    week.edit = false;
+
+	    ////////////////////////////
+
+	    function toggle() {
+	        week.edit = !week.edit;
+	    }
 	}
 
 	/* @ngInject */
@@ -726,7 +797,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -777,7 +848,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
