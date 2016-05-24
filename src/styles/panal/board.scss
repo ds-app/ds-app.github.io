@@ -4,15 +4,19 @@
     text-align: center;
     
     >div {
+      &:first-child {
+        font-size: 2em;
+      }
+      
       &:last-child {
         font-size: 4em;
-        margin: -.1em 0;
+        margin: -.2em 0;
       }
     }
   }
   
   .week-label {
-    margin-top: .5em;
+    margin-top: .6em;
     
     >div {
       display: inline-block;
@@ -45,6 +49,7 @@
         height: .75em;
 
         &:first-child {
+          border-radius: 10px 0 0 10px;
           background: repeating-linear-gradient(
                           45deg,
                           #606dbc,
@@ -54,6 +59,7 @@
           );
         }
         &:last-child {
+          border-radius: 0 10px 10px 0;
           background-color: #514E48;
         }
       }
