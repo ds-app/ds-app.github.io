@@ -579,7 +579,9 @@
 	    excepts.getTotal = getTotal;
 	    excepts.setFirst = setFirst;
 	    excepts.setLast = setLast;
+	    excepts.addLap = addLap;
 	    excepts.add = add;
+	    excepts.remove = remove;
 	    excepts.labels = getLabels();
 	    excepts.flip = true;
 
@@ -623,7 +625,35 @@
 	        return _.keys(Labels);
 	    }
 
-	    function add(id) {}
+	    function addLap(lap) {
+	        excepts.lap = lap;
+	    }
+
+	    function add(id) {
+	        var time = excepts.lap.val();
+
+	        if (!time) {
+	            return;
+	        }
+
+	        work.excepts.push({
+	            label: id,
+	            time: time
+	        });
+
+	        Storage.update(work);
+	        close();
+	    }
+
+	    function remove(except) {
+	        var index = _.findIndex(work.excepts, except),
+	            answer = confirm("Are you sure you want delete?");
+
+	        if (answer && index >= 0) {
+	            work.excepts.splice(index, 1);
+	            Storage.update(work);
+	        }
+	    }
 	}
 
 	/* @ngInject */
@@ -703,18 +733,22 @@
 
 	    $scope.$watch(function () {
 	        return hours.val();
-	    }, function (n, o) {
-	        if (n == o) return;
+	    }, function (n) {
+	        if (n == "") return;
 	        value.hours = minmax(+n, 0, 24);
 	        adjust();
 	    });
 
 	    $scope.$watch(function () {
 	        return minute.val();
-	    }, function (n, o) {
-	        if (n == o) return;
+	    }, function (n) {
+	        if (n == "") return;
 	        value.minute = minmax(+n, 0, 59);
 	        adjust();
+	    });
+
+	    ctrl.onLoad({
+	        $lap: ctrl
 	    });
 
 	    //////////////////////
@@ -755,8 +789,8 @@
 	            value.hours = undefined;
 	            value.minute = undefined;
 	            adjust();
-	        } else if (value.hours != undefined && value.minute != undefined) {
-	            return value.hours * 60 + value.minute;
+	        } else if (value.hours != undefined || value.minute != undefined) {
+	            return (value.hours || 0) * 60 + (value.minute || 0);
 	        }
 	    }
 	}
@@ -766,8 +800,12 @@
 	    return {
 	        restrict: "E",
 	        templateUrl: "views/lapTime.tpl.html",
+	        scope: {
+	            onLoad: "&"
+	        },
 	        controller: LapTimeCtrl,
-	        controllerAs: 'lap'
+	        controllerAs: 'lap',
+	        bindToController: true
 	    };
 	}
 
