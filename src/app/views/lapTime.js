@@ -18,24 +18,28 @@ function LapTimeCtrl($scope, $element) {
     hours.on('change', apply);
     minute.on('change', apply);
 
-    $scope.$watch('excepts.flip', (n) => {
+    $scope.$watch('excepts.flip', n => {
         if (n) {
             val("");
         }
     });
     
-    $scope.$watch(() => hours.val(), (n, o) => {
-        if (n == o) return;
+    $scope.$watch(() => hours.val(), n => {
+        if (n == "") return;
         value.hours = minmax(+n, 0, 24);
         adjust();
     });
 
-    $scope.$watch(() => minute.val(), (n, o) => {
-        if (n == o) return;
+    $scope.$watch(() => minute.val(), n => {
+        if (n == "") return;
         value.minute = minmax(+n, 0, 59);
         adjust();
     });
-    
+
+    ctrl.onLoad({
+        $lap: ctrl
+    });
+
 
     //////////////////////
     
@@ -75,8 +79,8 @@ function LapTimeCtrl($scope, $element) {
             value.hours = undefined;
             value.minute = undefined;
             adjust();
-        } else if (value.hours != undefined && value.minute != undefined) {
-            return (value.hours * 60) + (value.minute);
+        } else if (value.hours != undefined || value.minute != undefined) {
+            return ((value.hours || 0) * 60) + (value.minute || 0);
         }
     }
 }
@@ -86,7 +90,11 @@ function LapTimeDirective() {
     return {
         restrict: "E",
         templateUrl: "views/lapTime.tpl.html",
+        scope: {
+            onLoad: "&"
+        },
         controller: LapTimeCtrl,
-        controllerAs: 'lap'
+        controllerAs: 'lap',
+        bindToController: true
     };
 }

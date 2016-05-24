@@ -13,7 +13,9 @@ function ExceptsCtrl($scope, Util, Storage, Labels) {
     excepts.getTotal = getTotal;
     excepts.setFirst = setFirst;
     excepts.setLast = setLast;
+    excepts.addLap = addLap;
     excepts.add = add;
+    excepts.remove = remove;
     excepts.labels = getLabels();
     excepts.flip = true;
     
@@ -56,9 +58,35 @@ function ExceptsCtrl($scope, Util, Storage, Labels) {
     function getLabels() {
         return _.keys(Labels);
     }
-    
+
+    function addLap(lap) {
+        excepts.lap = lap;
+    }
+
     function add(id) {
-        
+        var time = excepts.lap.val();
+
+        if (!time) {
+            return;
+        }
+
+        work.excepts.push({
+            label : id,
+            time : time
+        });
+
+        Storage.update(work);
+        close();
+    }
+
+    function remove(except) {
+        var index = _.findIndex(work.excepts, except),
+            answer = confirm("Are you sure you want delete?");
+
+        if (answer && index >= 0) {
+            work.excepts.splice(index, 1);
+            Storage.update(work);
+        }
     }
 }
 

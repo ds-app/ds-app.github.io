@@ -31,11 +31,11 @@
     <div class="except half" ng-repeat="except in work.work.excepts">
         {{except.time | time}}
         <ds-label label="except.label"></ds-label>
-        <img src="images/symbols.png" />
+        <img src="images/symbols.png" ng-click="excepts.remove(except)"/>
     </div>
     <div class="except new" ng-if="!excepts.flip">
         <hr/>
-        <lap-time></lap-time>
+        <lap-time on-load="excepts.addLap($lap)"></lap-time>
         <ds-label ng-repeat="id in excepts.labels" label="id" ng-click="excepts.add(id)"></ds-label>
     </div>
 </div>
