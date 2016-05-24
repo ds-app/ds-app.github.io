@@ -6,6 +6,8 @@ require("app")
 /* @ngInject */
 function SummariesCtrl() {
     var summaries = this;
+    
+    summaries.flip = true;
 }
 
 

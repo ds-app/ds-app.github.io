@@ -1,6 +1,6 @@
 <div class="work">
 
-    <div>{{::work.work.workDate | date}}</div>
+    <div ng-class="{'today':work.isToday()}">{{::work.getDate()}}</div>
     <div>{{work.work.first | minute}}{{work.work.first ? " - " : ""}}{{work.work.last | minute}}</div>
     <div>{{work.work.working | time}}</div>
     <div>{{work.work.type}} + {{work.work.extra}}h</div>

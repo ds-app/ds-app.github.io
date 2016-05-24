@@ -3,9 +3,23 @@
   .today {
     text-align: center;
     
-    span {
-      &:first-child {
+    >div {
+      &:last-child {
         font-size: 4em;
+        margin: -.1em 0;
+      }
+    }
+  }
+  
+  .week-label {
+    margin-top: .5em;
+    
+    >div {
+      display: inline-block;
+      width: 50%;
+      
+      &:last-child {
+        text-align: right;
       }
     }
   }

@@ -4,9 +4,14 @@
     </div>
     
     <div class="today">
-        <span>{{board.today.working | time}}</span>
+        <div>Today</div>
+        <div>{{board.today.working | time}}</div>
     </div>
     
+    <div class="week-label">
+        <div>This week</div>
+        <div>Remain</div>
+    </div>
     <div class="time-gauge">
         <div class="gauge-label">{{board.getTotalWorkedTime() | time}}</div>
         <div class="gauge-wrap">
