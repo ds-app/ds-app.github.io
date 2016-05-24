@@ -688,6 +688,8 @@
 	/* @ngInject */
 	function SummariesCtrl() {
 	    var summaries = this;
+
+	    summaries.flip = true;
 	}
 
 	/* @ngInject */
@@ -729,19 +731,33 @@
 
 	"use strict";
 
-	__webpack_require__(1).directive("dsWork", WorkDirective);
+	WorkCtrl.$inject = ["Time", "Util"];__webpack_require__(1).directive("dsWork", WorkDirective);
 
 	/* @ngInject */
-	function WorkCtrl() {
-	    var work = this;
+	function WorkCtrl(Time, Util) {
+	    var work = this,
+	        today = work.work.workDate == Time.getWorkDate();
 
-	    work.flip = true;
+	    work.flip = !today;
 	    work.toggle = toggle;
+	    work.getDate = getDate;
+	    work.isToday = isToday;
 
 	    //////////////////////////////
 
 	    function toggle() {
 	        work.flip = !work.flip;
+	    }
+
+	    function getDate() {
+	        if (today) {
+	            return "Today";
+	        }
+	        return Util.date(work.work.workDate);
+	    }
+
+	    function isToday() {
+	        return today;
 	    }
 	}
 
