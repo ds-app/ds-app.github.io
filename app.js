@@ -61,7 +61,8 @@
 	__webpack_require__(15);
 	__webpack_require__(16);
 	__webpack_require__(17);
-	module.exports = __webpack_require__(18);
+	__webpack_require__(18);
+	module.exports = __webpack_require__(19);
 
 
 /***/ },
@@ -124,6 +125,12 @@
 	        "last": "2016-05-24T12:22:31.000Z",
 	        "excepts": [{ label: 0, time: 25 }, { label: 1, time: 53 }],
 	        "type": "8h"
+	    },
+	    "2016-05-25": {
+	        "first": "2016-05-25T01:00:23.000Z",
+	        "last": "2016-05-25T07:22:31.000Z",
+	        "excepts": [{ label: 0, time: 48 }, { label: 1, time: 23 }],
+	        "type": "4h"
 	    }
 	}).value("Labels", {
 	    "0": {
@@ -573,17 +580,9 @@
 	    excepts.setFirst = setFirst;
 	    excepts.setLast = setLast;
 
-	    $scope.$watch('work.flip', function (n) {
-	        if (!n && excepts.modify) {
-	            excepts.modify = false;
-	        }
-	    });
+	    $scope.$watch('work.flip', close);
 
-	    $scope.$watch('week.edit', function (n) {
-	        if (!n && excepts.modify) {
-	            excepts.modify = false;
-	        }
-	    });
+	    $scope.$watch('week.edit', close);
 
 	    ////////////////////
 
@@ -609,6 +608,12 @@
 	    function setLast(value) {
 	        work.last = setTime(value, work.last);
 	        return Storage.update(work);
+	    }
+
+	    function close(n) {
+	        if (!n && excepts.modify) {
+	            excepts.modify = false;
+	        }
 	    }
 	}
 
@@ -664,6 +669,106 @@
 
 	"use strict";
 
+	LapTimeCtrl.$inject = ["$scope", "$element"];__webpack_require__(1).directive("lapTime", LapTimeDirective);
+
+	/* @ngInject */
+	function LapTimeCtrl($scope, $element) {
+	    var ctrl = this,
+	        hours = $element.find(".lap_time_hours"),
+	        minute = $element.find(".lap_time_minute"),
+	        value = {
+	        hours: undefined,
+	        minute: undefined
+	    };
+
+	    ctrl.val = val;
+
+	    hours.on('click', apply);
+	    hours.on('keyup', apply);
+	    minute.on('click', apply);
+	    minute.on('keyup', apply);
+
+	    $scope.$watch(function () {
+	        return hours.val();
+	    }, function (n, o) {
+	        if (n == o) return;
+	        value.hours = +n;
+	        adjust();
+	    });
+
+	    $scope.$watch(function () {
+	        return minute.val();
+	    }, function (n, o) {
+	        if (n == o) return;
+	        value.minute = +n;
+	        adjust();
+	    });
+
+	    //////////////////////
+
+	    function apply() {
+	        $scope.$apply();
+	    }
+
+	    function isN(n) {
+	        return n == 0 || n > 0;
+	    }
+
+	    function lzp(value) {
+	        var str = "" + value;
+	        return ("00" + str).substr(Math.min(str.length, 2));
+	    }
+
+	    function adjust() {
+	        if (value.hours == 24 && value.minute > 0) {
+	            value.hours = 23;
+	        }
+
+	        hours.val(isN(value.hours) ? lzp(value.hours) : "");
+	        minute.val(isN(value.minute) ? lzp(value.minute) : "");
+	    }
+
+	    function minmax(value, min, max) {
+	        if (value < min) {
+	            return min;
+	        } else if (value > max) {
+	            return max;
+	        } else {
+	            return value;
+	        }
+	    }
+
+	    function val(newValue) {
+	        if (isN(newValue)) {
+	            value.hours = minmax(~ ~(newValue / 60), 0, 24);
+	            value.minute = newValue % 60;
+	            adjust();
+	        } else if (newValue == "") {
+	            value.hours = undefined;
+	            value.minute = undefined;
+	            adjust();
+	        } else if (value.hours != undefined && value.minute != undefined) {
+	            return value.hours * 60 + value.minute;
+	        }
+	    }
+	}
+
+	/* @ngInject */
+	function LapTimeDirective() {
+	    return {
+	        restrict: "E",
+	        templateUrl: "views/lapTime.tpl.html",
+	        controller: LapTimeCtrl,
+	        controllerAs: 'lap'
+	    };
+	}
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
 	MainCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsMain", MainDirective);
 
 	/* @ngInject */
@@ -685,7 +790,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -740,7 +845,7 @@
 	}
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -765,7 +870,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -797,7 +902,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -848,7 +953,7 @@
 	}
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
