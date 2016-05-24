@@ -724,8 +724,8 @@
 	            value.hours = 23;
 	        }
 
-	        hours.val(isN(value.hours) ? lzp(value.hours) : "");
-	        minute.val(isN(value.minute) ? lzp(value.minute) : "");
+	        hours.val(isN(value.hours) ? value.hours : "");
+	        minute.val(isN(value.minute) ? value.minute : "");
 	    }
 
 	    function minmax(value, min, max) {
