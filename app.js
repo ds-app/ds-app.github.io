@@ -567,10 +567,10 @@
 
 	"use strict";
 
-	ExceptsCtrl.$inject = ["$scope", "Util", "Storage"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+	ExceptsCtrl.$inject = ["$scope", "Util", "Storage", "Labels"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
 
 	/* @ngInject */
-	function ExceptsCtrl($scope, Util, Storage) {
+	function ExceptsCtrl($scope, Util, Storage, Labels) {
 	    var excepts = this,
 	        work = $scope.work.work;
 
@@ -579,9 +579,11 @@
 	    excepts.getTotal = getTotal;
 	    excepts.setFirst = setFirst;
 	    excepts.setLast = setLast;
+	    excepts.add = add;
+	    excepts.labels = getLabels();
+	    excepts.flip = true;
 
 	    $scope.$watch('work.flip', close);
-
 	    $scope.$watch('week.edit', close);
 
 	    ////////////////////
@@ -611,10 +613,17 @@
 	    }
 
 	    function close(n) {
-	        if (!n && excepts.modify) {
+	        if (!n) {
 	            excepts.modify = false;
+	            excepts.flip = true;
 	        }
 	    }
+
+	    function getLabels() {
+	        return _.keys(Labels);
+	    }
+
+	    function add(id) {}
 	}
 
 	/* @ngInject */
@@ -683,16 +692,20 @@
 
 	    ctrl.val = val;
 
-	    hours.on('click', apply);
-	    hours.on('keyup', apply);
-	    minute.on('click', apply);
-	    minute.on('keyup', apply);
+	    hours.on('change', apply);
+	    minute.on('change', apply);
+
+	    $scope.$watch('excepts.flip', function (n) {
+	        if (n) {
+	            val("");
+	        }
+	    });
 
 	    $scope.$watch(function () {
 	        return hours.val();
 	    }, function (n, o) {
 	        if (n == o) return;
-	        value.hours = +n;
+	        value.hours = minmax(+n, 0, 24);
 	        adjust();
 	    });
 
@@ -700,7 +713,7 @@
 	        return minute.val();
 	    }, function (n, o) {
 	        if (n == o) return;
-	        value.minute = +n;
+	        value.minute = minmax(+n, 0, 59);
 	        adjust();
 	    });
 
@@ -714,9 +727,14 @@
 	        return n == 0 || n > 0;
 	    }
 
-	    function lzp(value) {
-	        var str = "" + value;
-	        return ("00" + str).substr(Math.min(str.length, 2));
+	    function minmax(value, min, max) {
+	        if (value < min) {
+	            return min;
+	        } else if (value > max) {
+	            return max;
+	        } else {
+	            return value;
+	        }
 	    }
 
 	    function adjust() {
@@ -726,16 +744,6 @@
 
 	        hours.val(isN(value.hours) ? value.hours : "");
 	        minute.val(isN(value.minute) ? value.minute : "");
-	    }
-
-	    function minmax(value, min, max) {
-	        if (value < min) {
-	            return min;
-	        } else if (value > max) {
-	            return max;
-	        } else {
-	            return value;
-	        }
 	    }
 
 	    function val(newValue) {
