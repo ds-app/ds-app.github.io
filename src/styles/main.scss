@@ -57,7 +57,7 @@ body {
     margin-bottom: 10px;
     
     img {
-      width: 1em;
+      width: 1.1em;
       margin: 0 5px;
       float: right;
     }
@@ -68,6 +68,7 @@ body {
 @import "panal/board";
 @import "panal/week";
 @import "panal/summaries";
+@import "panal/lap";
 
 
 .workBtn {

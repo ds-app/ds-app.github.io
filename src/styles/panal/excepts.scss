@@ -5,9 +5,16 @@
   }
   
   .except {
+    padding: .5em 0;
+    
     img {
       float: none;
       vertical-align: bottom;
+    }
+    
+    &.new > hr {
+      border: #30404D 1px dashed;
+      margin: 0 0 10px 0;
     }
   }
   
@@ -18,10 +25,16 @@
     font-family: 'Open Sans Condensed', 'Noto Sans KR', sans-serif;
     border: none;
     font-size: 1em;
+    padding: 0;
+    margin: 0;
     -webkit-appearance:none;
     
     &.modify {
       color: #F2BF91;
     }
+  }
+  
+  .lap_time {
+    display: inline-block;
   }
 }

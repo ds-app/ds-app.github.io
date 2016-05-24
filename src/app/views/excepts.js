@@ -4,7 +4,7 @@ require("app")
 
 
 /* @ngInject */
-function ExceptsCtrl($scope, Util, Storage) {
+function ExceptsCtrl($scope, Util, Storage, Labels) {
     var excepts = this,
         work = $scope.work.work;
 
@@ -13,18 +13,12 @@ function ExceptsCtrl($scope, Util, Storage) {
     excepts.getTotal = getTotal;
     excepts.setFirst = setFirst;
     excepts.setLast = setLast;
+    excepts.add = add;
+    excepts.labels = getLabels();
+    excepts.flip = true;
     
-    $scope.$watch('work.flip', n => {
-        if (!n && excepts.modify) {
-            excepts.modify = false;
-        }
-    });
-
-    $scope.$watch('week.edit', n => {
-        if (!n && excepts.modify) {
-            excepts.modify = false;
-        }
-    });
+    $scope.$watch('work.flip', close);
+    $scope.$watch('week.edit', close);
 
     ////////////////////
 
@@ -50,6 +44,21 @@ function ExceptsCtrl($scope, Util, Storage) {
     function setLast(value) {
         work.last = setTime(value, work.last);
         return Storage.update(work);
+    }
+    
+    function close(n) {
+        if (!n) {
+            excepts.modify = false;
+            excepts.flip = true;
+        }
+    }
+    
+    function getLabels() {
+        return _.keys(Labels);
+    }
+    
+    function add(id) {
+        
     }
 }
 
