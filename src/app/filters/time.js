@@ -8,7 +8,7 @@ require("app")
 /* @ngInject */
 function TimeFilter(Util) {
     return function (value) {
-        return Util.time(value);
+        return Util.time(value) || "00:00";
     };
 }
 

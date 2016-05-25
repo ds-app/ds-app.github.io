@@ -4,12 +4,12 @@ require("app")
 
 
 /* @ngInject */
-function ExceptsCtrl($scope, Util, Storage, Labels) {
+function ExceptsCtrl($scope, Util, Storage) {
     var excepts = this,
         work = $scope.$eval('works');
 
-    excepts.first = Util.minute(work.first);
-    excepts.last = Util.minute(work.last);
+    //excepts.first = Util.minute(work.first);
+    //excepts.last = Util.minute(work.last);
     excepts.getTotal = getTotal;
     excepts.setFirst = setFirst;
     excepts.setLast = setLast;
@@ -21,14 +21,26 @@ function ExceptsCtrl($scope, Util, Storage, Labels) {
     
     $scope.$watch('work.flip', close);
     $scope.$watch('week.edit', close);
+    $scope.$watch(() => work.first, adjust);
+    $scope.$watch(() => work.last, adjust);
 
     ////////////////////
+    
+    function adjust() {
+        excepts.first = Util.minute(work.first);
+        excepts.last = Util.minute(work.last);
+    }
 
     function getTotal() {
         return _.sumBy(work.excepts, 'time');
     }
     
     function setTime(value, time) {
+        
+        if (!value) {
+            return;
+        }
+        
         var hm = moment(value, "HH:mm"),
             m = moment(time);
 
@@ -67,7 +79,7 @@ function ExceptsCtrl($scope, Util, Storage, Labels) {
         }
 
         work.excepts.push({
-            label : _.findIndex(Labels, label),
+            label : _.findIndex(Storage.getLabels(), label),
             time : time
         });
 

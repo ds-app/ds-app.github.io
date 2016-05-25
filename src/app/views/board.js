@@ -4,16 +4,17 @@ require("app")
 
 
 /* @ngInject */
-function BoardCtrl(Time, Storage) {
+function BoardCtrl(Time, Storage, Ticker) {
     var board = this,
         week = Storage.load(),
         WORK_TYPE = Time.WORK_TYPE;
     
-    board.today = pickToday();
+    board.today = Storage.today();
     board.getFullWorkingTime = getFullWorkingTime;
     board.getTotalWorkedTime = getTotalWorkedTime;
     board.getWorkedGauge = getWorkedGauge;
     board.getRemainGauge = getRemainGauge;
+    board.getTick = getTick;
     
     /////////////////
     
@@ -54,8 +55,8 @@ function BoardCtrl(Time, Storage) {
         };
     }
     
-    function pickToday() {
-        return _.find(week, work => work.workDate == Time.getWorkDate());
+    function getTick() {
+        return Ticker.tick;
     }
 }
 

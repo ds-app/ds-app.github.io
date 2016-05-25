@@ -4,7 +4,7 @@ require("app")
 
 
 /* @ngInject */
-function LabelCtrl($scope, $element, $attrs) {
+function LabelCtrl($scope, $element, $attrs, Storage) {
 
     var ctrl = this,
         label = $scope.$eval($attrs["label"]),
@@ -25,6 +25,7 @@ function LabelCtrl($scope, $element, $attrs) {
         
         $scope.$watch('label.name', n => {
             label.name = n;
+            Storage.storeLabels();
         });
     }
     

@@ -19,6 +19,10 @@ body {
 }
 
 
+.tick {
+  opacity: .7;
+}
+
 
 .label {
   padding: 0 10px;
@@ -89,14 +93,18 @@ body {
   position: fixed;
   right: 20px;
   bottom: 20px;
-  background-color: #000000;
+  background-color: #514E48;
   width: 50px;
   height: 50px;
   border-radius: 25px;
   cursor: pointer;
   opacity: .7;
   
-  @include vendor-prefix(box-shadow, #3b1c0a 0 3px 3px);
+  @include vendor-prefix(box-shadow, #4a4742 0 2px 2px);
+  
+  &.on {
+    background-color: #C05B4B;
+  }
 
   img {
     width: 50px;

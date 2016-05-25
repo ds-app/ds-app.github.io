@@ -27,7 +27,7 @@
         <hr/>
         <div>
             TAGS &nbsp;
-            <ds-label ng-repeat="item in week.labels" label="item" modify="true"></ds-label>
+            <ds-label ng-repeat="item in week.labels track by $index" label="item" modify="true"></ds-label>
         </div>
     </div>
 </div>

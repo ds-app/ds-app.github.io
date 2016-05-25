@@ -2,22 +2,48 @@ require("app")
     .service("Storage", Storage);
 
 
+var PREFIX = 'DONSU@2.0-',
+    WORKS_KEY = PREFIX + 'WORKS',
+    LABELS_KEY = PREFIX + 'LABELS',
+    STATUS_KEY = PREFIX + 'STATUS',
+    DEFAULT_LABELS = [
+        {
+            name: "기타"
+        },
+        {
+            name: "헬스",
+            color: "#C05B4B"
+        },
+        {
+            name: "",
+            color: "#97A82D"
+        },
+        {
+            name: "",
+            color: "#F68923"
+        }
+    ],
+    Status = {
+        'ON' : 'ON',
+        'OFF' : 'OFF'
+    };
+
+
 /* @ngInject */
-function Storage(Week, Time, Sample) {
+function Storage($localStorage, Week, Time) {
 
     var storage = this,
         WORK_TYPE = Time.WORK_TYPE,
-        works = _(Week.workWeek()).map(date => {
-            return _.extend({}, Sample[date] || newWork(date), {
-                workDate : date
-            });
-        }).map(work => {
-            return _.extend(work, Time.getWorkingTime(work));
-        }).value();
-
+        works = getWorks(),
+        labels = JSON.parse($localStorage.getItem(LABELS_KEY)) || DEFAULT_LABELS,
+        /* TODO */
+        status = $localStorage.getItem(STATUS_KEY) || Status.OFF;
 
     storage.load = load;
+    storage.today = today;
     storage.update = update;
+    storage.getLabels = getLabels;
+    storage.storeLabels = storeLabels;
 
 
     //////////////////////
@@ -37,13 +63,52 @@ function Storage(Week, Time, Sample) {
             };
         }
     }
+    
+    function getWorks() {
+        
+        var locals = JSON.parse($localStorage.getItem(WORKS_KEY) || '{}');
+        
+        return _(Week.workWeek()).map(date => {
+            return _.extend({}, locals[date] || newWork(date), {
+                workDate : date
+            });
+        }).map(work => {
+            return _.extend(work, Time.getWorkingTime(work));
+        }).value();
+    }
+    
+    function getLabels() {
+        return labels;
+    }
+    
+    function today() {
+        return _.find(works, work => work.workDate == Time.getWorkDate());
+    }
 
     function load() {
         return works;
     }
     
+    function storeLabels() {
+        var data = _.map(labels, label => _.pick(label, ["name", "color"]));
+        
+        $localStorage.setItem(LABELS_KEY, JSON.stringify(data));
+    }
+    
+    function storeWorks() {
+        var data = _(works).keyBy('workDate').mapValues(work => {
+            return _.pick(work, ["first", "last", "excepts", "type"]);
+        }).value();
+        
+        $localStorage.setItem(WORKS_KEY, JSON.stringify(data));
+    }
+    
     function update(work) {
-        return _.extend(work, Time.getWorkingTime(work));
+        var updated = _.extend(work, Time.getWorkingTime(work));
+        
+        storeWorks();
+        
+        return updated;
     }
 
 }

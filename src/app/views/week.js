@@ -4,12 +4,12 @@ require("app")
 
 
 /* @ngInject */
-function WeekCtrl(Labels) {
+function WeekCtrl(Storage) {
     var week = this;
     
     week.toggle = toggle;
     week.edit = false;
-    week.labels = Labels;
+    week.labels = Storage.getLabels();
     
     ////////////////////////////
     

@@ -5,7 +5,7 @@
     
     <div class="today">
         <div>Today</div>
-        <div>{{board.today.working | time | timeholder}}</div>
+        <div ng-class="{tick: board.getTick()}">{{board.today.working | time | timeholder}}</div>
     </div>
     
     <div class="week-label">
@@ -13,11 +13,11 @@
         <div>Remain</div>
     </div>
     <div class="time-gauge">
-        <div class="gauge-label">{{board.getTotalWorkedTime() | time}}</div>
+        <div class="gauge-label" ng-class="{tick: board.getTick()}">{{board.getTotalWorkedTime() | time}}</div>
         <div class="gauge-wrap">
             <div class="gauge" ng-style="board.getWorkedGauge()"></div>
             <div class="gauge" ng-style="board.getRemainGauge()"></div>
         </div>
-        <div class="gauge-label">{{board.getFullWorkingTime() - board.getTotalWorkedTime() | time}}</div>
+        <div class="gauge-label" ng-class="{tick: board.getTick()}">{{board.getFullWorkingTime() - board.getTotalWorkedTime() | time}}</div>
     </div>
 </div>

@@ -4,8 +4,19 @@ require("app")
 
 
 /* @ngInject */
-function WorkBtnCtrl(Time) {
+function WorkBtnCtrl(Ticker) {
+    var ctrl = this;
+    
+    ctrl.isRecording = Ticker.isRecording;
+    ctrl.toggle = Ticker.toggle;
+    ctrl.getTick = getTick;
+    
+    ////////////////////////
 
+
+    function getTick() {
+        return Ticker.tick;
+    }
 }
 
 
@@ -14,6 +25,7 @@ function WorkBtnDirective() {
     return {
         restrict : "E",
         templateUrl : "views/workBtn.tpl.html",
-        controller : WorkBtnCtrl
+        controller : WorkBtnCtrl,
+        controllerAs : "btns"
     }
 }
