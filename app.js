@@ -84,7 +84,7 @@
 
 	TimeFilter.$inject = ["Util"];
 	MinuteFilter.$inject = ["Util"];
-	DateFilter.$inject = ["Util"];__webpack_require__(1).filter("time", TimeFilter).filter("minute", MinuteFilter).filter("date", DateFilter);
+	DateFilter.$inject = ["Util"];__webpack_require__(1).filter("time", TimeFilter).filter("minute", MinuteFilter).filter("date", DateFilter).filter("timeholder", TimeHolder);
 
 	/* @ngInject */
 	function TimeFilter(Util) {
@@ -104,6 +104,13 @@
 	function DateFilter(Util) {
 	    return function (value) {
 	        return Util.date(value);
+	    };
+	}
+
+	/* @ngInject */
+	function TimeHolder() {
+	    return function (value) {
+	        return value || "00:00";
 	    };
 	}
 
@@ -132,15 +139,18 @@
 	        "excepts": [{ label: 0, time: 48 }, { label: 1, time: 23 }],
 	        "type": "4h"
 	    }
-	}).value("Labels", {
-	    "0": {
-	        name: "기타"
-	    },
-	    "1": {
-	        name: "헬스",
-	        color: "#C05B4B"
-	    }
-	});
+	}).value("Labels", [{
+	    name: "기타"
+	}, {
+	    name: "헬스",
+	    color: "#C05B4B"
+	}, {
+	    name: "",
+	    color: "#97A82D"
+	}, {
+	    name: "",
+	    color: "#F68923"
+	}]);
 
 /***/ },
 /* 4 */
@@ -241,7 +251,7 @@
 	                return time - 60;
 	            }
 	        } else {
-	            return time;
+	            return Math.max(time, 0);
 	        }
 	    }
 
@@ -249,14 +259,14 @@
 	        if (type == WORK_TYPE.DAY_OFF) {
 	            return 0;
 	        } else {
-	            return Math.min(digested, 720);
+	            return Math.max(Math.min(digested, 720), 0);
 	        }
 	    }
 
 	    function effectTime(digested, excepts) {
-	        return digested - _.sumBy(excepts, function (except) {
+	        return Math.max(digested - _.sumBy(excepts, function (except) {
 	            return except.time;
-	        });
+	        }), 0);
 	    }
 
 	    function overtime(effective) {
@@ -572,7 +582,7 @@
 	/* @ngInject */
 	function ExceptsCtrl($scope, Util, Storage, Labels) {
 	    var excepts = this,
-	        work = $scope.work.work;
+	        work = $scope.$eval('works');
 
 	    excepts.first = Util.minute(work.first);
 	    excepts.last = Util.minute(work.last);
@@ -582,8 +592,8 @@
 	    excepts.addLap = addLap;
 	    excepts.add = add;
 	    excepts.remove = remove;
-	    excepts.labels = getLabels();
 	    excepts.flip = true;
+	    excepts.labelFilter = labelFilter;
 
 	    $scope.$watch('work.flip', close);
 	    $scope.$watch('week.edit', close);
@@ -621,15 +631,11 @@
 	        }
 	    }
 
-	    function getLabels() {
-	        return _.keys(Labels);
-	    }
-
 	    function addLap(lap) {
 	        excepts.lap = lap;
 	    }
 
-	    function add(id) {
+	    function add(label) {
 	        var time = excepts.lap.val();
 
 	        if (!time) {
@@ -637,7 +643,7 @@
 	        }
 
 	        work.excepts.push({
-	            label: id,
+	            label: _.findIndex(Labels, label),
 	            time: time
 	        });
 
@@ -653,6 +659,10 @@
 	            work.excepts.splice(index, 1);
 	            Storage.update(work);
 	        }
+	    }
+
+	    function labelFilter(item) {
+	        return !!item.name;
 	    }
 	}
 
@@ -672,13 +682,16 @@
 
 	"use strict";
 
-	LabelCtrl.$inject = ["$scope", "$element", "$attrs", "Labels"];__webpack_require__(1).directive("dsLabel", LabelDirective);
+	LabelCtrl.$inject = ["$scope", "$element", "$attrs"];__webpack_require__(1).directive("dsLabel", LabelDirective);
 
 	/* @ngInject */
-	function LabelCtrl($scope, $element, $attrs, Labels) {
+	function LabelCtrl($scope, $element, $attrs) {
 
 	    var ctrl = this,
-	        label = Labels[$scope.$eval($attrs["label"])];
+	        label = $scope.$eval($attrs["label"]),
+	        mod = $attrs["modify"];
+
+	    ctrl.isEditable = isEditable;
 
 	    activate();
 
@@ -686,16 +699,25 @@
 
 	    function activate() {
 	        ctrl.name = label.name;
+
 	        $element.css({
 	            "background-color": label.color || "#90AFAA"
 	        });
+
+	        $scope.$watch('label.name', function (n) {
+	            label.name = n;
+	        });
+	    }
+
+	    function isEditable() {
+	        return $scope.$eval(mod);
 	    }
 	}
 
 	/* @ngInject */
 	function LabelDirective() {
 	    return {
-	        template: '<span class="label">{{label.name}}</span>',
+	        template: '<span class="label"><input type="text" ng-model="label.name" ng-disabled="!label.isEditable()"/></span>',
 	        replace: true,
 	        controller: LabelCtrl,
 	        controllerAs: "label"
@@ -841,13 +863,15 @@
 
 	"use strict";
 
-	ModeCtrl.$inject = ["Time", "Util"];__webpack_require__(1).directive("dsMode", ModeDirective);
+	ModeCtrl.$inject = ["$scope", "Time", "Util"];__webpack_require__(1).directive("dsMode", ModeDirective);
 
 	/* @ngInject */
-	function ModeCtrl(Time, Util) {
+	function ModeCtrl($scope, Time, Util) {
 	    var mode = this,
-	        today = mode.work.workDate == Time.getWorkDate();
+	        works = $scope.$eval('works'),
+	        today = works.workDate == Time.getWorkDate();
 
+	    mode.work = works;
 	    mode.isSelected = isSelected;
 	    mode.getDate = getDate;
 	    mode.isToday = isToday;
@@ -856,14 +880,14 @@
 	    //////////////////////////////
 
 	    function isSelected(type) {
-	        return mode.work.type == type;
+	        return works.type == type;
 	    }
 
 	    function getDate() {
 	        if (today) {
 	            return "Today";
 	        }
-	        return Util.date(mode.work.workDate);
+	        return Util.date(works.workDate);
 	    }
 
 	    function isToday() {
@@ -871,7 +895,7 @@
 	    }
 
 	    function select(type) {
-	        return mode.work.type = type;
+	        return works.type = type;
 	    }
 	}
 
@@ -880,13 +904,9 @@
 	    return {
 	        restrict: "A",
 	        templateUrl: "views/mode.tpl.html",
-	        scope: {
-	            work: "=dsMode"
-	        },
 	        replace: true,
 	        controller: ModeCtrl,
-	        controllerAs: "mode",
-	        bindToController: true
+	        controllerAs: "mode"
 	    };
 	}
 
@@ -921,14 +941,15 @@
 
 	"use strict";
 
-	__webpack_require__(1).directive("dsWeek", WeekDirective);
+	WeekCtrl.$inject = ["Labels"];__webpack_require__(1).directive("dsWeek", WeekDirective);
 
 	/* @ngInject */
-	function WeekCtrl() {
+	function WeekCtrl(Labels) {
 	    var week = this;
 
 	    week.toggle = toggle;
 	    week.edit = false;
+	    week.labels = Labels;
 
 	    ////////////////////////////
 
@@ -953,13 +974,15 @@
 
 	"use strict";
 
-	WorkCtrl.$inject = ["Time", "Util"];__webpack_require__(1).directive("dsWork", WorkDirective);
+	WorkCtrl.$inject = ["$scope", "Time", "Util", "Labels"];__webpack_require__(1).directive("dsWork", WorkDirective);
 
 	/* @ngInject */
-	function WorkCtrl(Time, Util) {
+	function WorkCtrl($scope, Time, Util, Labels) {
 	    var work = this,
-	        today = work.work.workDate == Time.getWorkDate();
+	        works = $scope.$eval('works'),
+	        today = works.workDate == Time.getWorkDate();
 
+	    work.work = works;
 	    work.flip = !today;
 	    work.toggle = toggle;
 	    work.getDate = getDate;
@@ -975,7 +998,7 @@
 	        if (today) {
 	            return "Today";
 	        }
-	        return Util.date(work.work.workDate);
+	        return Util.date(works.workDate);
 	    }
 
 	    function isToday() {
@@ -988,13 +1011,9 @@
 	    return {
 	        restrict: "A",
 	        templateUrl: "views/work.tpl.html",
-	        scope: {
-	            work: "=dsWork"
-	        },
 	        replace: true,
 	        controller: WorkCtrl,
-	        controllerAs: "work",
-	        bindToController: true
+	        controllerAs: "work"
 	    };
 	}
 
