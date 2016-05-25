@@ -90,7 +90,7 @@
 	/* @ngInject */
 	function TimeFilter(Util) {
 	    return function (value) {
-	        return Util.time(value);
+	        return Util.time(value) || "00:00";
 	    };
 	}
 
@@ -241,7 +241,7 @@
 
 	    function getTicker(sec) {
 	        return rx.Observable.interval(sec).map(function () {
-	            return moment();
+	            return moment().startOf('minute');
 	        });
 	    }
 
@@ -254,15 +254,10 @@
 	    }
 
 	    function record() {
-	        if (!today.first) {
-	            today.first = moment().toISOString();
-	            Storage.update(today);
-	        }
-
-	        _isRecording = true;
 	        job = ticker.subscribe({
 	            onNext: function onNext(m) {
 	                $rootScope.$apply(function () {
+	                    _isRecording = true;
 	                    if (!today.first) {
 	                        today.first = m.toISOString();
 	                    }
@@ -661,8 +656,8 @@
 	    var excepts = this,
 	        work = $scope.$eval('works');
 
-	    excepts.first = Util.minute(work.first);
-	    excepts.last = Util.minute(work.last);
+	    //excepts.first = Util.minute(work.first);
+	    //excepts.last = Util.minute(work.last);
 	    excepts.getTotal = getTotal;
 	    excepts.setFirst = setFirst;
 	    excepts.setLast = setLast;
@@ -674,14 +669,30 @@
 
 	    $scope.$watch('work.flip', close);
 	    $scope.$watch('week.edit', close);
+	    $scope.$watch(function () {
+	        return work.first;
+	    }, adjust);
+	    $scope.$watch(function () {
+	        return work.last;
+	    }, adjust);
 
 	    ////////////////////
+
+	    function adjust() {
+	        excepts.first = Util.minute(work.first);
+	        excepts.last = Util.minute(work.last);
+	    }
 
 	    function getTotal() {
 	        return _.sumBy(work.excepts, 'time');
 	    }
 
 	    function setTime(value, time) {
+
+	        if (!value) {
+	            return;
+	        }
+
 	        var hm = moment(value, "HH:mm"),
 	            m = moment(time);
 
