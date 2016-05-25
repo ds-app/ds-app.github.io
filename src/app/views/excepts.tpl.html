@@ -30,12 +30,12 @@
     </div>
     <div class="except half" ng-repeat="except in work.work.excepts">
         {{except.time | time}}
-        <ds-label label="except.label"></ds-label>
+        <ds-label label="week.labels[except.label]"></ds-label>
         <img src="images/symbols.png" ng-click="excepts.remove(except)"/>
     </div>
     <div class="except new" ng-if="!excepts.flip">
         <hr/>
         <lap-time on-load="excepts.addLap($lap)"></lap-time>
-        <ds-label ng-repeat="id in excepts.labels" label="id" ng-click="excepts.add(id)"></ds-label>
+        <ds-label ng-repeat="item in week.labels | filter:excepts.labelFilter" label="item" ng-click="excepts.add(item)"></ds-label>
     </div>
 </div>

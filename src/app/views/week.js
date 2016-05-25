@@ -4,18 +4,18 @@ require("app")
 
 
 /* @ngInject */
-function WeekCtrl() {
+function WeekCtrl(Labels) {
     var week = this;
     
     week.toggle = toggle;
     week.edit = false;
+    week.labels = Labels;
     
     ////////////////////////////
     
     function toggle() {
         week.edit = !week.edit;
     }
-    
     
 }
 

@@ -4,10 +4,12 @@ require("app")
 
 
 /* @ngInject */
-function ModeCtrl(Time, Util) {
+function ModeCtrl($scope, Time, Util) {
     var mode = this,
-        today = mode.work.workDate == Time.getWorkDate();
+        works = $scope.$eval('works'),
+        today = works.workDate == Time.getWorkDate();
 
+    mode.work = works;
     mode.isSelected = isSelected;
     mode.getDate = getDate;
     mode.isToday = isToday;
@@ -16,14 +18,14 @@ function ModeCtrl(Time, Util) {
     //////////////////////////////
 
     function isSelected(type) {
-        return mode.work.type == type;
+        return works.type == type;
     }
     
     function getDate() {
         if (today) {
             return "Today";
         }
-        return Util.date(mode.work.workDate);
+        return Util.date(works.workDate);
     }
 
     function isToday() {
@@ -31,7 +33,7 @@ function ModeCtrl(Time, Util) {
     }
     
     function select(type) {
-        return mode.work.type = type;
+        return works.type = type;
     }
 }
 
@@ -41,12 +43,8 @@ function ModeDirective() {
     return {
         restrict: "A",
         templateUrl : "views/mode.tpl.html",
-        scope : {
-            work: "=dsMode"
-        },
         replace: true,
         controller : ModeCtrl,
-        controllerAs : "mode",
-        bindToController: true
+        controllerAs : "mode"
     }
 }

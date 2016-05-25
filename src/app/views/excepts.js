@@ -6,7 +6,7 @@ require("app")
 /* @ngInject */
 function ExceptsCtrl($scope, Util, Storage, Labels) {
     var excepts = this,
-        work = $scope.work.work;
+        work = $scope.$eval('works');
 
     excepts.first = Util.minute(work.first);
     excepts.last = Util.minute(work.last);
@@ -16,8 +16,8 @@ function ExceptsCtrl($scope, Util, Storage, Labels) {
     excepts.addLap = addLap;
     excepts.add = add;
     excepts.remove = remove;
-    excepts.labels = getLabels();
     excepts.flip = true;
+    excepts.labelFilter = labelFilter;
     
     $scope.$watch('work.flip', close);
     $scope.$watch('week.edit', close);
@@ -54,16 +54,12 @@ function ExceptsCtrl($scope, Util, Storage, Labels) {
             excepts.flip = true;
         }
     }
-    
-    function getLabels() {
-        return _.keys(Labels);
-    }
 
     function addLap(lap) {
         excepts.lap = lap;
     }
 
-    function add(id) {
+    function add(label) {
         var time = excepts.lap.val();
 
         if (!time) {
@@ -71,7 +67,7 @@ function ExceptsCtrl($scope, Util, Storage, Labels) {
         }
 
         work.excepts.push({
-            label : id,
+            label : _.findIndex(Labels, label),
             time : time
         });
 
@@ -87,6 +83,10 @@ function ExceptsCtrl($scope, Util, Storage, Labels) {
             work.excepts.splice(index, 1);
             Storage.update(work);
         }
+    }
+    
+    function labelFilter(item) {
+        return !!item.name;
     }
 }
 

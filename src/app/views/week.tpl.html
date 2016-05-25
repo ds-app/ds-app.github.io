@@ -13,7 +13,7 @@
             <div>MORE</div>
         </div>
     
-        <div ng-repeat="work in main.data track by work.workDate" ds-work="work"></div>
+        <div ng-repeat="works in main.data track by works.workDate" ds-work></div>
     </div>
     
     <div ng-if="week.edit">
@@ -22,6 +22,12 @@
             <div>TYPE</div>
         </div>
         
-        <div ng-repeat="work in main.data track by work.workDate" ds-mode="work"></div>
+        <div ng-repeat="works in main.data track by works.workDate" ds-mode></div>
+
+        <hr/>
+        <div>
+            TAGS &nbsp;
+            <ds-label ng-repeat="item in week.labels" label="item" modify="true"></ds-label>
+        </div>
     </div>
 </div>

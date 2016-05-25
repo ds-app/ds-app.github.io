@@ -4,10 +4,12 @@ require("app")
 
 
 /* @ngInject */
-function WorkCtrl(Time, Util) {
+function WorkCtrl($scope, Time, Util, Labels) {
     var work = this,
-        today = work.work.workDate == Time.getWorkDate();
+        works = $scope.$eval('works'),
+        today = works.workDate == Time.getWorkDate();
 
+    work.work = works;
     work.flip = !today;
     work.toggle = toggle;
     work.getDate = getDate;
@@ -23,7 +25,7 @@ function WorkCtrl(Time, Util) {
         if (today) {
             return "Today";
         }
-        return Util.date(work.work.workDate);
+        return Util.date(works.workDate);
     }
     
     function isToday() {
@@ -37,12 +39,8 @@ function WorkDirective() {
     return {
         restrict: "A",
         templateUrl : "views/work.tpl.html",
-        scope : {
-            work: "=dsWork"
-        },
         replace: true,
         controller : WorkCtrl,
-        controllerAs : "work",
-        bindToController: true
+        controllerAs : "work"
     }
 }

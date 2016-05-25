@@ -43,7 +43,7 @@ function TimeService() {
                 return time - 60;
             }
         } else {
-            return time;
+            return Math.max(time, 0);
         }
 
     }
@@ -52,12 +52,12 @@ function TimeService() {
         if (type == WORK_TYPE.DAY_OFF) {
             return 0;
         } else  {
-            return Math.min(digested, 720);
+            return Math.max(Math.min(digested, 720), 0);
         }
     }
 
     function effectTime(digested, excepts) {
-        return digested - _.sumBy(excepts, except => except.time);
+        return Math.max(digested - _.sumBy(excepts, except => except.time), 0);
     }
 
     function overtime(effective) {

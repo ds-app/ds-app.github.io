@@ -17,12 +17,20 @@ require("app").value("Sample", {
         "excepts": [{label: 0, time: 48}, {label: 1, time: 23}],
         "type": "4h"
     }
-}).value("Labels", {
-    "0" : {
+}).value("Labels", [
+    {
         name: "기타"
     },
-    "1" : {
+    {
         name: "헬스",
         color: "#C05B4B"
+    },
+    {
+        name: "",
+        color: "#97A82D"
+    },
+    {
+        name: "",
+        color: "#F68923"
     }
-});
+]);
