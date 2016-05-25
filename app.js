@@ -62,7 +62,8 @@
 	__webpack_require__(16);
 	__webpack_require__(17);
 	__webpack_require__(18);
-	module.exports = __webpack_require__(19);
+	__webpack_require__(19);
+	module.exports = __webpack_require__(20);
 
 
 /***/ },
@@ -174,6 +175,7 @@
 	    }).value();
 
 	    storage.load = load;
+	    storage.today = today;
 	    storage.update = update;
 
 	    //////////////////////
@@ -194,6 +196,12 @@
 	        }
 	    }
 
+	    function today() {
+	        return _.find(works, function (work) {
+	            return work.workDate == Time.getWorkDate();
+	        });
+	    }
+
 	    function load() {
 	        return works;
 	    }
@@ -205,6 +213,75 @@
 
 /***/ },
 /* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Ticker.$inject = ["$rootScope", "Storage", "rx"];__webpack_require__(1).factory('Ticker', Ticker);
+
+	/* @ngInject */
+	function Ticker($rootScope, Storage, rx) {
+
+	    var _isRecording = false,
+	        today = Storage.today(),
+	        ticker = getTicker(500),
+	        job;
+
+	    var svc = {
+	        tick: false,
+	        isRecording: function isRecording() {
+	            return _isRecording;
+	        },
+	        toggle: toggle
+	    };
+
+	    return svc;
+
+	    ////////////////////
+
+	    function getTicker(sec) {
+	        return rx.Observable.interval(sec).map(function () {
+	            return moment();
+	        });
+	    }
+
+	    function toggle() {
+	        if (_isRecording) {
+	            return stop();
+	        } else {
+	            return record();
+	        }
+	    }
+
+	    function record() {
+	        if (!today.first) {
+	            today.first = moment().toISOString();
+	            Storage.update(today);
+	        }
+
+	        _isRecording = true;
+	        job = ticker.subscribe({
+	            onNext: function onNext(m) {
+	                $rootScope.$apply(function () {
+	                    if (!today.first) {
+	                        today.first = m.toISOString();
+	                    }
+	                    today.last = m.toISOString();
+	                    Storage.update(today);
+	                    svc.tick = !svc.tick;
+	                });
+	            }
+	        });
+	    }
+
+	    function stop() {
+	        _isRecording = false;
+	        job && job.dispose();
+	    }
+	}
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -349,7 +426,7 @@
 	}
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -399,7 +476,7 @@
 	}
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -431,24 +508,25 @@
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	BoardCtrl.$inject = ["Time", "Storage"];__webpack_require__(1).directive("dsBoard", BoardDirective);
+	BoardCtrl.$inject = ["Time", "Storage", "Ticker"];__webpack_require__(1).directive("dsBoard", BoardDirective);
 
 	/* @ngInject */
-	function BoardCtrl(Time, Storage) {
+	function BoardCtrl(Time, Storage, Ticker) {
 	    var board = this,
 	        week = Storage.load(),
 	        WORK_TYPE = Time.WORK_TYPE;
 
-	    board.today = pickToday();
+	    board.today = Storage.today();
 	    board.getFullWorkingTime = getFullWorkingTime;
 	    board.getTotalWorkedTime = getTotalWorkedTime;
 	    board.getWorkedGauge = getWorkedGauge;
 	    board.getRemainGauge = getRemainGauge;
+	    board.getTick = getTick;
 
 	    /////////////////
 
@@ -493,10 +571,8 @@
 	        };
 	    }
 
-	    function pickToday() {
-	        return _.find(week, function (work) {
-	            return work.workDate == Time.getWorkDate();
-	        });
+	    function getTick() {
+	        return Ticker.tick;
 	    }
 	}
 
@@ -511,7 +587,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -547,7 +623,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -572,7 +648,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -677,7 +753,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -725,7 +801,7 @@
 	}
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -832,7 +908,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -858,7 +934,7 @@
 	}
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -911,7 +987,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -936,7 +1012,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -969,7 +1045,7 @@
 	}
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1018,22 +1094,30 @@
 	}
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	WorkBtnCtrl.$inject = ["Time"];__webpack_require__(1).directive("dsWorkBtn", WorkBtnDirective);
+	WorkBtnCtrl.$inject = ["Ticker"];__webpack_require__(1).directive("dsWorkBtn", WorkBtnDirective);
 
 	/* @ngInject */
-	function WorkBtnCtrl(Time) {}
+	function WorkBtnCtrl(Ticker) {
+	    var ctrl = this;
+
+	    ctrl.isRecording = Ticker.isRecording;
+	    ctrl.toggle = Ticker.toggle;
+
+	    ////////////////////////
+	}
 
 	/* @ngInject */
 	function WorkBtnDirective() {
 	    return {
 	        restrict: "E",
 	        templateUrl: "views/workBtn.tpl.html",
-	        controller: WorkBtnCtrl
+	        controller: WorkBtnCtrl,
+	        controllerAs: "btns"
 	    };
 	}
 
