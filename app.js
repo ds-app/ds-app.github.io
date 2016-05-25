@@ -275,8 +275,9 @@
 	    }
 
 	    function stop() {
-	        _isRecording = false;
 	        job && job.dispose();
+	        _isRecording = false;
+	        svc.tick = false;
 	    }
 	}
 
@@ -1107,8 +1108,13 @@
 
 	    ctrl.isRecording = Ticker.isRecording;
 	    ctrl.toggle = Ticker.toggle;
+	    ctrl.getTick = getTick;
 
 	    ////////////////////////
+
+	    function getTick() {
+	        return Ticker.tick;
+	    }
 	}
 
 	/* @ngInject */
