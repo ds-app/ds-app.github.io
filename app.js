@@ -63,7 +63,8 @@
 	__webpack_require__(17);
 	__webpack_require__(18);
 	__webpack_require__(19);
-	module.exports = __webpack_require__(20);
+	__webpack_require__(20);
+	module.exports = __webpack_require__(21);
 
 
 /***/ },
@@ -121,6 +122,16 @@
 
 	"use strict";
 
+	__webpack_require__(1).service('$localStorage', function () {
+	    return localStorage;
+	});
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
 	__webpack_require__(1).value("Sample", {
 	    "2016-05-23": {
 	        "first": "2016-05-22T21:00:31.000Z",
@@ -140,7 +151,21 @@
 	        "excepts": [{ label: 0, time: 48 }, { label: 1, time: 23 }],
 	        "type": "4h"
 	    }
-	}).value("Labels", [{
+	});
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Storage.$inject = ["$localStorage", "Week", "Time"];__webpack_require__(1).service("Storage", Storage);
+
+	var PREFIX = 'DONSU@2.0-',
+	    WORKS_KEY = PREFIX + 'WORKS',
+	    LABELS_KEY = PREFIX + 'LABELS',
+	    STATUS_KEY = PREFIX + 'STATUS',
+	    DEFAULT_LABELS = [{
 	    name: "기타"
 	}, {
 	    name: "헬스",
@@ -151,32 +176,28 @@
 	}, {
 	    name: "",
 	    color: "#F68923"
-	}]);
-
-/***/ },
-/* 4 */
-/***/ function(module, exports, __webpack_require__) {
-
-	"use strict";
-
-	Storage.$inject = ["Week", "Time", "Sample"];__webpack_require__(1).service("Storage", Storage);
+	}],
+	    Status = {
+	    'ON': 'ON',
+	    'OFF': 'OFF'
+	};
 
 	/* @ngInject */
-	function Storage(Week, Time, Sample) {
+	function Storage($localStorage, Week, Time) {
 
 	    var storage = this,
 	        WORK_TYPE = Time.WORK_TYPE,
-	        works = _(Week.workWeek()).map(function (date) {
-	        return _.extend({}, Sample[date] || newWork(date), {
-	            workDate: date
-	        });
-	    }).map(function (work) {
-	        return _.extend(work, Time.getWorkingTime(work));
-	    }).value();
+	        works = getWorks(),
+	        labels = JSON.parse($localStorage.getItem(LABELS_KEY)) || DEFAULT_LABELS,
+
+	    /* TODO */
+	    status = $localStorage.getItem(STATUS_KEY) || Status.OFF;
 
 	    storage.load = load;
 	    storage.today = today;
 	    storage.update = update;
+	    storage.getLabels = getLabels;
+	    storage.storeLabels = storeLabels;
 
 	    //////////////////////
 
@@ -196,6 +217,23 @@
 	        }
 	    }
 
+	    function getWorks() {
+
+	        var locals = JSON.parse($localStorage.getItem(WORKS_KEY) || '{}');
+
+	        return _(Week.workWeek()).map(function (date) {
+	            return _.extend({}, locals[date] || newWork(date), {
+	                workDate: date
+	            });
+	        }).map(function (work) {
+	            return _.extend(work, Time.getWorkingTime(work));
+	        }).value();
+	    }
+
+	    function getLabels() {
+	        return labels;
+	    }
+
 	    function today() {
 	        return _.find(works, function (work) {
 	            return work.workDate == Time.getWorkDate();
@@ -206,13 +244,33 @@
 	        return works;
 	    }
 
+	    function storeLabels() {
+	        var data = _.map(labels, function (label) {
+	            return _.pick(label, ["name", "color"]);
+	        });
+
+	        $localStorage.setItem(LABELS_KEY, JSON.stringify(data));
+	    }
+
+	    function storeWorks() {
+	        var data = _(works).keyBy('workDate').mapValues(function (work) {
+	            return _.pick(work, ["first", "last", "excepts", "type"]);
+	        }).value();
+
+	        $localStorage.setItem(WORKS_KEY, JSON.stringify(data));
+	    }
+
 	    function update(work) {
-	        return _.extend(work, Time.getWorkingTime(work));
+	        var updated = _.extend(work, Time.getWorkingTime(work));
+
+	        storeWorks();
+
+	        return updated;
 	    }
 	}
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -277,7 +335,7 @@
 	}
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -422,7 +480,7 @@
 	}
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -472,7 +530,7 @@
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -504,7 +562,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -583,7 +641,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -619,7 +677,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -644,15 +702,15 @@
 	}
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	ExceptsCtrl.$inject = ["$scope", "Util", "Storage", "Labels"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+	ExceptsCtrl.$inject = ["$scope", "Util", "Storage"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
 
 	/* @ngInject */
-	function ExceptsCtrl($scope, Util, Storage, Labels) {
+	function ExceptsCtrl($scope, Util, Storage) {
 	    var excepts = this,
 	        work = $scope.$eval('works');
 
@@ -731,7 +789,7 @@
 	        }
 
 	        work.excepts.push({
-	            label: _.findIndex(Labels, label),
+	            label: _.findIndex(Storage.getLabels(), label),
 	            time: time
 	        });
 
@@ -765,15 +823,15 @@
 	}
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	LabelCtrl.$inject = ["$scope", "$element", "$attrs"];__webpack_require__(1).directive("dsLabel", LabelDirective);
+	LabelCtrl.$inject = ["$scope", "$element", "$attrs", "Storage"];__webpack_require__(1).directive("dsLabel", LabelDirective);
 
 	/* @ngInject */
-	function LabelCtrl($scope, $element, $attrs) {
+	function LabelCtrl($scope, $element, $attrs, Storage) {
 
 	    var ctrl = this,
 	        label = $scope.$eval($attrs["label"]),
@@ -794,6 +852,7 @@
 
 	        $scope.$watch('label.name', function (n) {
 	            label.name = n;
+	            Storage.storeLabels();
 	        });
 	    }
 
@@ -813,7 +872,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -920,7 +979,7 @@
 	}
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -946,7 +1005,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -999,7 +1058,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1024,20 +1083,20 @@
 	}
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	WeekCtrl.$inject = ["Labels"];__webpack_require__(1).directive("dsWeek", WeekDirective);
+	WeekCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsWeek", WeekDirective);
 
 	/* @ngInject */
-	function WeekCtrl(Labels) {
+	function WeekCtrl(Storage) {
 	    var week = this;
 
 	    week.toggle = toggle;
 	    week.edit = false;
-	    week.labels = Labels;
+	    week.labels = Storage.getLabels();
 
 	    ////////////////////////////
 
@@ -1057,15 +1116,15 @@
 	}
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
 
-	WorkCtrl.$inject = ["$scope", "Time", "Util", "Labels"];__webpack_require__(1).directive("dsWork", WorkDirective);
+	WorkCtrl.$inject = ["$scope", "Time", "Util"];__webpack_require__(1).directive("dsWork", WorkDirective);
 
 	/* @ngInject */
-	function WorkCtrl($scope, Time, Util, Labels) {
+	function WorkCtrl($scope, Time, Util) {
 	    var work = this,
 	        works = $scope.$eval('works'),
 	        today = works.workDate == Time.getWorkDate();
@@ -1106,7 +1165,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
