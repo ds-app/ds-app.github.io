@@ -591,16 +591,14 @@
 
 	    /////////////////
 
-	    function workWeek(offset) {
-
-	        offset = offset || 0;
+	    function workWeek() {
 
 	        var m = moment(Time.getWorkDate());
 
 	        m.subtract((m.day() + 6) % 7, 'd');
-	        m.add(offset * 7, 'd');
+	        m.subtract(7, 'd');
 
-	        return _(7).range().map(function (day) {
+	        return _(14).range().map(function (day) {
 	            return moment(m).add(day, 'd').format('YYYY-MM-DD');
 	        }).reverse().value();
 	    }
@@ -617,7 +615,7 @@
 	/* @ngInject */
 	function BoardCtrl(Time, Storage, Ticker) {
 	    var board = this,
-	        week = Storage.load(),
+	        week = Storage.load().slice(0, 7),
 	        WORK_TYPE = Time.WORK_TYPE;
 
 	    board.today = Storage.today();
@@ -1140,11 +1138,20 @@
 	    week.toggle = toggle;
 	    week.edit = false;
 	    week.labels = Storage.getLabels();
+	    week.more = more;
+	    week.flip = true;
 
 	    ////////////////////////////
 
 	    function toggle() {
 	        week.edit = !week.edit;
+	    }
+
+	    function more(item, index) {
+	        if (week.flip && index >= 7) {
+	            return false;
+	        }
+	        return true;
 	    }
 	}
 
