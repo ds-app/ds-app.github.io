@@ -13,21 +13,25 @@
             <div>MORE</div>
         </div>
     
-        <div ng-repeat="works in main.data track by works.workDate" ds-work></div>
+        <div ng-repeat="works in main.data | filter:week.more track by works.workDate" ds-work></div>
     </div>
     
     <div ng-if="week.edit">
-        <div class="mode">
-            <div>DATE</div>
-            <div>TYPE</div>
-        </div>
-        
-        <div ng-repeat="works in main.data track by works.workDate" ds-mode></div>
-
-        <hr/>
         <div>
             TAGS &nbsp;
             <ds-label ng-repeat="item in week.labels track by $index" label="item" modify="true"></ds-label>
         </div>
+
+        <hr/>
+
+        <div class="mode">
+            <div>DATE</div>
+            <div>TYPE</div>
+        </div>
+
+        <div ng-repeat="works in main.data | filter:week.more track by works.workDate" ds-mode></div>
+    </div>
+    <div class="more">
+        <div ng-click="week.flip = !week.flip" ng-class="{'clicked':!week.flip}">{{ week.flip ? "MORE" : "CLOSE" }}</div>
     </div>
 </div>

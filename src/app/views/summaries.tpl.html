@@ -3,7 +3,10 @@
         Summaries
         <img src="images/elipsis.png" ng-click="summaries.flip = !summaries.flip"/>
     </div>
-    <div ng-hide="summaries.flip">
-        Time
+    <div ng-hide="summaries.flip" class="info">
+        <div ng-repeat="info in summaries.list">
+            <div>{{info.title}}</div>
+            <div>{{info.time() | minute}}</div>
+        </div>
     </div>
 </div>

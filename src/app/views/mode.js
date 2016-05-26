@@ -4,7 +4,7 @@ require("app")
 
 
 /* @ngInject */
-function ModeCtrl($scope, Time, Util) {
+function ModeCtrl($scope, Time, Util, Storage) {
     var mode = this,
         works = $scope.$eval('works'),
         today = works.workDate == Time.getWorkDate();
@@ -33,7 +33,8 @@ function ModeCtrl($scope, Time, Util) {
     }
     
     function select(type) {
-        return works.type = type;
+        works.type = type;
+        Storage.update(works);
     }
 }
 

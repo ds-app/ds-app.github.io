@@ -12,16 +12,14 @@ function WeekService(Time) {
 
     /////////////////
 
-    function workWeek(offset) {
-
-        offset = offset || 0;
+    function workWeek() {
 
         var m = moment(Time.getWorkDate());
 
         m.subtract(((m.day() + 6) % 7), 'd');
-        m.add(offset * 7, 'd');
+        m.subtract(7, 'd');
 
-        return _(7).range().map(day => {
+        return _(14).range().map(day => {
             return moment(m).add(day, 'd').format('YYYY-MM-DD');
         }).reverse().value();
     }

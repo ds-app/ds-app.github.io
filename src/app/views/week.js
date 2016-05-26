@@ -10,11 +10,20 @@ function WeekCtrl(Storage) {
     week.toggle = toggle;
     week.edit = false;
     week.labels = Storage.getLabels();
+    week.more = more;
+    week.flip = true;
     
     ////////////////////////////
     
     function toggle() {
         week.edit = !week.edit;
+    }
+    
+    function more(item, index) {
+        if (week.flip && index >= 7) {
+            return false;
+        }
+        return true;
     }
     
 }

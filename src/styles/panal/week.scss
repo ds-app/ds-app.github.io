@@ -3,6 +3,11 @@
   .mode {
     width: 100%;
 
+    &:nth-child(11) {
+      border-top: #384A59 2px dashed;
+      margin-top: .7em;
+    }
+
     &> div {
       display: inline-block;
       padding-top: 10px;
@@ -37,6 +42,11 @@
 
   .work {
     width: 100%;
+    
+    &:nth-child(9) {
+      border-top: #384A59 2px dashed;
+      margin-top: .7em;
+    }
 
     &> div {
       display: inline-block;
@@ -77,6 +87,25 @@
       }
 
       @import "excepts";
+    }
+  }
+
+  .more {
+    text-align: center;
+    position: absolute;
+    left: 0;
+    width: 100%;
+
+    div {
+      display: inline-block;
+      width: 5em;
+      border-radius: 1em;
+      background-color: #30404D;
+      color: #F2F2F2;
+      font-weight: bold;
+      margin: 1em;
+      padding: .2em;
+      @include vendor-prefix(box-shadow, #4a4742 0 2px 2px);
     }
   }
 }

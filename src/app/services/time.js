@@ -2,8 +2,8 @@ require("app")
     .service("Time", TimeService);
 
 var WORK_TYPE = {
-        "DAY_OFF" : "NA",
-        "HOLIDAY" : "0h",
+        "HOLIDAY" : "NA",
+        "DAY_OFF" : "0h",
         "HALF" : "4h",
         "FULL" : "8h"
     };

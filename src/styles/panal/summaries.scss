@@ -1,0 +1,21 @@
+.summaries {
+  .info {
+    > div {
+      > div {
+        display: inline-block;
+        width: 50%;
+        padding: .1em 1.5em;
+        
+        &:first-child {
+          text-align: right;
+        }
+      }
+      
+      &:nth-child(6) {
+        border-top: #F2F2F2 2px dotted;
+        margin-top: .5em;
+        padding-top: .5em;
+      }
+    }
+  }
+}

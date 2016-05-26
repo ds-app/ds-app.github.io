@@ -6,7 +6,7 @@ require("app")
 /* @ngInject */
 function BoardCtrl(Time, Storage, Ticker) {
     var board = this,
-        week = Storage.load(),
+        week = Storage.load().slice(0, 7),
         WORK_TYPE = Time.WORK_TYPE;
     
     board.today = Storage.today();

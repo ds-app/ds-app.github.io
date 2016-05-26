@@ -66,7 +66,7 @@ function Storage($localStorage, Week, Time) {
         if (day == 0 || day == 6) {
             return {
                 "excepts": [],
-                "type": WORK_TYPE.DAY_OFF
+                "type": WORK_TYPE.HOLIDAY
             };
         } else {
             return {
