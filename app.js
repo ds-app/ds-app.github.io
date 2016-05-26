@@ -609,10 +609,20 @@
 	    board.today = Storage.today();
 	    board.getFullWorkingTime = getFullWorkingTime;
 	    board.getTotalWorkedTime = getTotalWorkedTime;
+	    board.getRemainTime = getRemainTime;
 	    board.getWorkedGauge = getWorkedGauge;
+	    board.isFull = isFull;
 	    board.getTick = getTick;
 
 	    /////////////////
+
+	    function isFull() {
+	        return getWorkedRate() >= 100;
+	    }
+
+	    function getRemainTime() {
+	        return Math.max(getFullWorkingTime() - getTotalWorkedTime(), 0);
+	    }
 
 	    function getFullWorkingTime() {
 	        return _(week).map(function (work) {
@@ -636,7 +646,7 @@
 	    }
 
 	    function getWorkedRate() {
-	        return Math.max(Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime()), 0);
+	        return Math.min(Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime()), 100);
 	    }
 
 	    function getWorkedGauge() {
