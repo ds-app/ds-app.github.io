@@ -12,11 +12,20 @@ function BoardCtrl(Time, Storage, Ticker) {
     board.today = Storage.today();
     board.getFullWorkingTime = getFullWorkingTime;
     board.getTotalWorkedTime = getTotalWorkedTime;
+    board.getRemainTime = getRemainTime;
     board.getWorkedGauge = getWorkedGauge;
-    board.getRemainGauge = getRemainGauge;
+    board.isFull = isFull;
     board.getTick = getTick;
     
     /////////////////
+    
+    function isFull() {
+        return getWorkedRate() >= 100;
+    }
+    
+    function getRemainTime() {
+        return Math.max(getFullWorkingTime() - getTotalWorkedTime(), 0);
+    }
     
     function getFullWorkingTime() {
         return _(week).map(work => work.type).map(type => {
@@ -36,22 +45,12 @@ function BoardCtrl(Time, Storage, Ticker) {
     }
     
     function getWorkedRate() {
-        return Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime());
-    }
-    
-    function getRemainRate() {
-        return 100 - getWorkedRate();
+        return Math.min(Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime()), 100);
     }
 
     function getWorkedGauge() {
         return {
             width: getWorkedRate() + '%'
-        };
-    }
-
-    function getRemainGauge() {
-        return {
-            width: getRemainRate() + '%'
         };
     }
     

@@ -1,7 +1,7 @@
 <div class="week panal">
     <div class="header">
         Week
-        <img src="images/tool.png" ng-click="week.toggle()"/>
+        <img src="images/tool.png" ng-click="week.toggle()" ng-class="{'clicked':week.edit}" />
     </div>
 
     <div ng-if="!week.edit">

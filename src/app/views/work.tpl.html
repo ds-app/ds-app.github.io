@@ -4,7 +4,7 @@
     <div>{{work.work.first | minute}}{{work.work.first ? " - " : ""}}{{work.work.last | minute}}</div>
     <div>{{work.work.working | time}}</div>
     <div>{{work.work.type}} + {{work.work.extra}}h</div>
-    <div ng-click="work.toggle()"><img src="images/elipsis.png" /></div>
+    <div ng-click="work.toggle()"><img src="images/elipsis.png" ng-class="{'clicked':!work.flip}" /></div>
 
     <div class="extra" ng-hide="!!work.flip">
         <ds-excepts></ds-excepts>

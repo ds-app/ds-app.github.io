@@ -43,13 +43,27 @@
     
     .gauge-wrap {
       width: 74%;
+      position: relative;
+      height: .75em;
+      
+      &.full {
+        opacity: .6;
+      }
       
       .gauge {
-        width: 50%;
         height: .75em;
+        border-radius: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+
 
         &:first-child {
-          border-radius: 10px 0 0 10px;
+          background-color: #514E48;
+          width: 100%;
+        }
+        
+        &:last-child {
           background: repeating-linear-gradient(
                           45deg,
                           #606dbc,
@@ -57,10 +71,6 @@
                           #465298 10px,
                           #465298 20px
           );
-        }
-        &:last-child {
-          border-radius: 0 10px 10px 0;
-          background-color: #514E48;
         }
       }
     }

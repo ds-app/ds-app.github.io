@@ -35,18 +35,30 @@ function Storage($localStorage, Week, Time) {
     var storage = this,
         WORK_TYPE = Time.WORK_TYPE,
         works = getWorks(),
-        labels = JSON.parse($localStorage.getItem(LABELS_KEY)) || DEFAULT_LABELS,
+        labels = JSON.parse($localStorage.getItem(LABELS_KEY)) || DEFAULT_LABELS;
         /* TODO */
-        status = $localStorage.getItem(STATUS_KEY) || Status.OFF;
 
     storage.load = load;
     storage.today = today;
     storage.update = update;
     storage.getLabels = getLabels;
     storage.storeLabels = storeLabels;
+    storage.Status = Status;
+    storage.status = status;
+    
+    
 
 
     //////////////////////
+    
+    
+    function status(value) {
+        if (value) {
+            $localStorage.setItem(STATUS_KEY, value);
+        } else {
+            return $localStorage.getItem(STATUS_KEY) || Status.OFF;
+        }
+    }
 
     function newWork(date) {
         var day = moment(date).day();

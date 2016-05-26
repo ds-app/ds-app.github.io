@@ -8,6 +8,7 @@ function Ticker($rootScope, Storage, rx) {
 
     var isRecording = false,
         today = Storage.today(),
+        Status = Storage.Status,
         ticker = getTicker(500),
         job;
     
@@ -46,6 +47,7 @@ function Ticker($rootScope, Storage, rx) {
                     }
                     today.last = m.toISOString();
                     Storage.update(today);
+                    Storage.status(Status.ON);
                     svc.tick = !svc.tick;
                 });
             }
@@ -54,6 +56,7 @@ function Ticker($rootScope, Storage, rx) {
 
     function stop() {
         job && job.dispose();
+        Storage.status(Status.OFF);
         isRecording = false;
         svc.tick = false;
     }
