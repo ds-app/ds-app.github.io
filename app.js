@@ -64,7 +64,8 @@
 	__webpack_require__(18);
 	__webpack_require__(19);
 	__webpack_require__(20);
-	module.exports = __webpack_require__(21);
+	__webpack_require__(21);
+	module.exports = __webpack_require__(22);
 
 
 /***/ },
@@ -80,6 +81,25 @@
 
 /***/ },
 /* 2 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+
+	Init.$inject = ["Storage", "Ticker"];__webpack_require__(1).run(Init);
+
+	/* @ngInject */
+	function Init(Storage, Ticker) {
+
+	    var Status = Storage.Status,
+	        status = Storage.status();
+
+	    if (status == Status.ON && !Ticker.isRecording() || status == Status.OFF && Ticker.isRecording()) {
+	        Ticker.toggle();
+	    }
+	}
+
+/***/ },
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -117,7 +137,7 @@
 	}
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -127,7 +147,7 @@
 	});
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -154,7 +174,7 @@
 	});
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -188,18 +208,26 @@
 	    var storage = this,
 	        WORK_TYPE = Time.WORK_TYPE,
 	        works = getWorks(),
-	        labels = JSON.parse($localStorage.getItem(LABELS_KEY)) || DEFAULT_LABELS,
-
+	        labels = JSON.parse($localStorage.getItem(LABELS_KEY)) || DEFAULT_LABELS;
 	    /* TODO */
-	    status = $localStorage.getItem(STATUS_KEY) || Status.OFF;
 
 	    storage.load = load;
 	    storage.today = today;
 	    storage.update = update;
 	    storage.getLabels = getLabels;
 	    storage.storeLabels = storeLabels;
+	    storage.Status = Status;
+	    storage.status = status;
 
 	    //////////////////////
+
+	    function status(value) {
+	        if (value) {
+	            $localStorage.setItem(STATUS_KEY, value);
+	        } else {
+	            return $localStorage.getItem(STATUS_KEY) || Status.OFF;
+	        }
+	    }
 
 	    function newWork(date) {
 	        var day = moment(date).day();
@@ -270,7 +298,7 @@
 	}
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -282,6 +310,7 @@
 
 	    var _isRecording = false,
 	        today = Storage.today(),
+	        Status = Storage.Status,
 	        ticker = getTicker(500),
 	        job;
 
@@ -321,6 +350,7 @@
 	                    }
 	                    today.last = m.toISOString();
 	                    Storage.update(today);
+	                    Storage.status(Status.ON);
 	                    svc.tick = !svc.tick;
 	                });
 	            }
@@ -329,13 +359,14 @@
 
 	    function stop() {
 	        job && job.dispose();
+	        Storage.status(Status.OFF);
 	        _isRecording = false;
 	        svc.tick = false;
 	    }
 	}
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -480,7 +511,7 @@
 	}
 
 /***/ },
-/* 8 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -530,7 +561,7 @@
 	}
 
 /***/ },
-/* 9 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -562,7 +593,7 @@
 	}
 
 /***/ },
-/* 10 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -579,7 +610,6 @@
 	    board.getFullWorkingTime = getFullWorkingTime;
 	    board.getTotalWorkedTime = getTotalWorkedTime;
 	    board.getWorkedGauge = getWorkedGauge;
-	    board.getRemainGauge = getRemainGauge;
 	    board.getTick = getTick;
 
 	    /////////////////
@@ -606,22 +636,12 @@
 	    }
 
 	    function getWorkedRate() {
-	        return Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime());
-	    }
-
-	    function getRemainRate() {
-	        return 100 - getWorkedRate();
+	        return Math.max(Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime()), 0);
 	    }
 
 	    function getWorkedGauge() {
 	        return {
 	            width: getWorkedRate() + '%'
-	        };
-	    }
-
-	    function getRemainGauge() {
-	        return {
-	            width: getRemainRate() + '%'
 	        };
 	    }
 
@@ -641,7 +661,7 @@
 	}
 
 /***/ },
-/* 11 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -677,7 +697,7 @@
 	}
 
 /***/ },
-/* 12 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -702,7 +722,7 @@
 	}
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -823,7 +843,7 @@
 	}
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -872,7 +892,7 @@
 	}
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -979,7 +999,7 @@
 	}
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1005,7 +1025,7 @@
 	}
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1058,7 +1078,7 @@
 	}
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1083,7 +1103,7 @@
 	}
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1116,7 +1136,7 @@
 	}
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -1165,7 +1185,7 @@
 	}
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
