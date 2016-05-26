@@ -17,6 +17,7 @@ function TimeService() {
 
     svc.getWorkDate = getWorkDate;
     svc.getWorkingTime = getWorkingTime;
+    svc.getTime = getTime;
 
     svc.WORK_TYPE = WORK_TYPE;
 
@@ -26,6 +27,19 @@ function TimeService() {
     function getWorkDate(date) {
         var m = moment(date);
         return m.utcOffset(m.utcOffset() - startMinutes).format('YYYY-MM-DD');
+    }
+    
+    function getTime(workDate, time) {
+        var wd = moment(workDate),
+            hm = moment.utc(time, "HH:mm"),
+            h = hm.hours(),
+            m = hm.minutes();
+        
+        if ((h*60 + m) < startMinutes) {
+            wd.add(1, 'd');
+        }
+        
+        return wd.hours(h).minutes(m);
     }
 
     function digestTime(time, type) {

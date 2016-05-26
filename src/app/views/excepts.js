@@ -4,12 +4,10 @@ require("app")
 
 
 /* @ngInject */
-function ExceptsCtrl($scope, Util, Storage) {
+function ExceptsCtrl($scope, Time, Util, Storage) {
     var excepts = this,
         work = $scope.$eval('works');
 
-    //excepts.first = Util.minute(work.first);
-    //excepts.last = Util.minute(work.last);
     excepts.getTotal = getTotal;
     excepts.setFirst = setFirst;
     excepts.setLast = setLast;
@@ -41,13 +39,16 @@ function ExceptsCtrl($scope, Util, Storage) {
             return;
         }
         
-        var hm = moment(value, "HH:mm"),
+        return Time.getTime(work.workDate, value).toISOString();
+        
+        /*var workDate = work.workDate,
+            hm = moment(value, "HH:mm"),
             m = moment(time);
 
         m.hours(hm.hours());
         m.minutes(hm.minutes());
 
-        return m.toISOString();
+        return m.toISOString();*/
     }
     
     function setFirst(value) {
