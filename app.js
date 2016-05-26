@@ -388,6 +388,7 @@
 
 	    svc.getWorkDate = getWorkDate;
 	    svc.getWorkingTime = getWorkingTime;
+	    svc.getTime = getTime;
 
 	    svc.WORK_TYPE = WORK_TYPE;
 
@@ -396,6 +397,19 @@
 	    function getWorkDate(date) {
 	        var m = moment(date);
 	        return m.utcOffset(m.utcOffset() - startMinutes).format('YYYY-MM-DD');
+	    }
+
+	    function getTime(workDate, time) {
+	        var wd = moment(workDate),
+	            hm = moment.utc(time, "HH:mm"),
+	            h = hm.hours(),
+	            m = hm.minutes();
+
+	        if (h * 60 + m < startMinutes) {
+	            wd.add(1, 'd');
+	        }
+
+	        return wd.hours(h).minutes(m);
 	    }
 
 	    function digestTime(time, type) {
@@ -737,15 +751,13 @@
 
 	"use strict";
 
-	ExceptsCtrl.$inject = ["$scope", "Util", "Storage"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
+	ExceptsCtrl.$inject = ["$scope", "Time", "Util", "Storage"];__webpack_require__(1).directive("dsExcepts", ExceptsDirective);
 
 	/* @ngInject */
-	function ExceptsCtrl($scope, Util, Storage) {
+	function ExceptsCtrl($scope, Time, Util, Storage) {
 	    var excepts = this,
 	        work = $scope.$eval('works');
 
-	    //excepts.first = Util.minute(work.first);
-	    //excepts.last = Util.minute(work.last);
 	    excepts.getTotal = getTotal;
 	    excepts.setFirst = setFirst;
 	    excepts.setLast = setLast;
@@ -781,13 +793,14 @@
 	            return;
 	        }
 
-	        var hm = moment(value, "HH:mm"),
+	        return Time.getTime(work.workDate, value).toISOString();
+
+	        /*var workDate = work.workDate,
+	            hm = moment(value, "HH:mm"),
 	            m = moment(time);
-
-	        m.hours(hm.hours());
+	          m.hours(hm.hours());
 	        m.minutes(hm.minutes());
-
-	        return m.toISOString();
+	          return m.toISOString();*/
 	    }
 
 	    function setFirst(value) {
