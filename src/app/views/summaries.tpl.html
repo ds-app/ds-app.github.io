@@ -1,10 +1,10 @@
 <div class="summaries panal">    
     <div class="header">
         Summaries
-        <img src="images/elipsis.png" ng-click="summaries.flip = !summaries.flip"/>
+        <img src="images/elipsis.png" ng-click="summaries.flip = !summaries.flip" ng-class="{'clicked':!summaries.flip}"/>
     </div>
     <div ng-hide="summaries.flip" class="info">
-        <div ng-repeat="info in summaries.list">
+        <div ng-repeat="info in summaries.list" ng-class="{'past':summaries.isPast(info.time())}">
             <div>{{info.title}}</div>
             <div>{{info.time() | minute}}</div>
         </div>

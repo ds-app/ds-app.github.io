@@ -54,6 +54,7 @@ function SummariesCtrl($scope, Storage, Time) {
     
     summaries.flip = true;
     summaries.list = getInfo();
+    summaries.isPast = isPast;
     
     $scope.$watch(() => today.type, () => {
         summaries.list = getInfo();
@@ -83,6 +84,10 @@ function SummariesCtrl($scope, Storage, Time) {
     
     function getExceptTime() {
         return _.sumBy(today.excepts, 'time');
+    }
+    
+    function isPast(time) {
+        return moment().isSameOrAfter(time);
     }
 }
 

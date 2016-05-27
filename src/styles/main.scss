@@ -32,7 +32,7 @@ body {
 }
 
 @keyframes doing {
-  50% { background-color: #C05B4B; }
+  50% { background-color: #514E48; }
 }
 
 .tick {
@@ -122,6 +122,10 @@ body {
   
   @include vendor-prefix(box-shadow, #4a4742 0 2px 2px);
 
+  &.on {
+    background-color: #C05B4B;
+  }
+  
   img {
     width: 60px;
   }

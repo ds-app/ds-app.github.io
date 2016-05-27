@@ -40,15 +40,6 @@ function ExceptsCtrl($scope, Time, Util, Storage) {
         }
         
         return Time.getTime(work.workDate, value).toISOString();
-        
-        /*var workDate = work.workDate,
-            hm = moment(value, "HH:mm"),
-            m = moment(time);
-
-        m.hours(hm.hours());
-        m.minutes(hm.minutes());
-
-        return m.toISOString();*/
     }
     
     function setFirst(value) {

@@ -23,8 +23,8 @@
     </div>
     <div class="half">근무 시간 &nbsp; {{work.work.working | time}}</div>
     <div class="half">실효 시간 &nbsp; {{work.work.effective | time}}</div>
-    <div class="half">근무 형태 &nbsp; {{work.work.type}}</div>
-    <div class="half">추가 수당 &nbsp; {{work.work.extra}}</div>
+    <div class="half">근무 형태 &nbsp; {{work.getTypeName()}}</div>
+    <div class="half" ng-if="work.work.extra">추가 수당 &nbsp; +{{work.work.extra}}h</div>
     <hr/>
     <div class="header">
         근무 외 시간 &nbsp; {{excepts.getTotal() | time}}

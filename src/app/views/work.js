@@ -14,6 +14,7 @@ function WorkCtrl($scope, Time, Util) {
     work.toggle = toggle;
     work.getDate = getDate;
     work.isToday = isToday;
+    work.getTypeName = getTypeName;
 
     //////////////////////////////
 
@@ -30,6 +31,10 @@ function WorkCtrl($scope, Time, Util) {
     
     function isToday() {
         return today;
+    }
+    
+    function getTypeName() {
+        return Time.getTypeName(works.type);
     }
 }
 

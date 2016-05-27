@@ -18,6 +18,7 @@ function TimeService() {
     svc.getWorkDate = getWorkDate;
     svc.getWorkingTime = getWorkingTime;
     svc.getTime = getTime;
+    svc.getTypeName = getTypeName;
 
     svc.WORK_TYPE = WORK_TYPE;
 
@@ -89,7 +90,7 @@ function TimeService() {
         }
     }
 
-    function dayOffTime(effective) {
+    function holidayTime(effective) {
 
         if (effective < 240) {
             return 0;
@@ -142,7 +143,7 @@ function TimeService() {
         digested = digestTime(diff, work.type);
         working = workingTime(digested, work.type);
         effect = effectTime(digested, work.excepts);
-        extra = (work.type == WORK_TYPE.DAY_OFF) ? dayOffTime(effect) : overtime(effect);
+        extra = (work.type == WORK_TYPE.HOLIDAY) ? holidayTime(effect) : overtime(effect);
 
         return {
             total : diff,
@@ -151,5 +152,19 @@ function TimeService() {
             effective : effect,
             extra : extra
         };
+    }
+    
+    function getTypeName(type) {
+        switch (type) {
+            case WORK_TYPE.HALF:
+                return "Half";
+            case WORK_TYPE.DAY_OFF:
+                return "Day Off";
+            case WORK_TYPE.HOLIDAY:
+                return "Holiday";
+            case WORK_TYPE.FULL:
+            default:
+                return "Full";
+        }
     }
 }

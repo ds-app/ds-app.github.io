@@ -3,7 +3,11 @@
     <div ng-class="{'today':work.isToday()}">{{::work.getDate()}}</div>
     <div>{{work.work.first | minute}}{{work.work.first ? " - " : ""}}{{work.work.last | minute}}</div>
     <div>{{work.work.working | time}}</div>
-    <div>{{work.work.type}} + {{work.work.extra}}h</div>
+    <!--<div>{{work.work.type}} + {{work.work.extra}}h</div>-->
+    <div>
+        <div class="w{{work.work.type}}">{{work.getTypeName()}}</div>
+        <span ng-if="work.work.extra">+{{work.work.extra}}</span>
+    </div>
     <div ng-click="work.toggle()"><img src="images/elipsis.png" ng-class="{'clicked':!work.flip}" /></div>
 
     <div class="extra" ng-hide="!!work.flip">

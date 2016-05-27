@@ -1,5 +1,7 @@
 .summaries {
   .info {
+    font-size: .8em;
+    
     > div {
       > div {
         display: inline-block;
@@ -15,6 +17,10 @@
         border-top: #F2F2F2 2px dotted;
         margin-top: .5em;
         padding-top: .5em;
+      }
+      
+      &.past {
+        opacity: .6;
       }
     }
   }
