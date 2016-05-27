@@ -1110,7 +1110,7 @@
 
 	"use strict";
 
-	SummariesCtrl.$inject = ["$scope", "Storage", "Time"];__webpack_require__(1).directive("dsSummaries", SummariesDirective);
+	SummariesCtrl.$inject = ["$scope", "Storage", "Time", "Util"];__webpack_require__(1).directive("dsSummaries", SummariesDirective);
 
 	var INFO = [{
 	    title: "출근",
@@ -1156,7 +1156,7 @@
 	}];
 
 	/* @ngInject */
-	function SummariesCtrl($scope, Storage, Time) {
+	function SummariesCtrl($scope, Storage, Time, Util) {
 	    var summaries = this,
 	        today = Storage.today(),
 	        WORK_TYPE = Time.WORK_TYPE;
@@ -1164,6 +1164,7 @@
 	    summaries.flip = true;
 	    summaries.list = getInfo();
 	    summaries.isPast = isPast;
+	    summaries.message = getMessage;
 
 	    $scope.$watch(function () {
 	        return today.type;
@@ -1199,6 +1200,14 @@
 
 	    function isPast(time) {
 	        return moment().isSameOrAfter(time);
+	    }
+
+	    function getMessage() {
+	        var fast = _(summaries.list).filter(function (info) {
+	            return !isPast(info.time());
+	        }).head();
+
+	        return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(), "minutes")) + "남음";
 	    }
 	}
 
