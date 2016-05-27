@@ -13,7 +13,6 @@ function Ticker($rootScope, Storage, rx) {
         job;
     
     var svc = {
-        tick : false,
         isRecording: () => isRecording,
         toggle : toggle
     };
@@ -26,7 +25,8 @@ function Ticker($rootScope, Storage, rx) {
         return rx
             .Observable
             .interval(sec)
-            .map(() => moment().startOf('minute'));
+            .map(() => moment().startOf('minute'))
+            .distinct();
     }
 
     function toggle() {
@@ -48,7 +48,6 @@ function Ticker($rootScope, Storage, rx) {
                     today.last = m.toISOString();
                     Storage.update(today);
                     Storage.status(Status.ON);
-                    svc.tick = !svc.tick;
                 });
             }
         });
@@ -58,6 +57,5 @@ function Ticker($rootScope, Storage, rx) {
         job && job.dispose();
         Storage.status(Status.OFF);
         isRecording = false;
-        svc.tick = false;
     }
 }

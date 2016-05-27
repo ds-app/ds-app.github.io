@@ -15,7 +15,7 @@ function BoardCtrl(Time, Storage, Ticker) {
     board.getRemainTime = getRemainTime;
     board.getWorkedGauge = getWorkedGauge;
     board.isFull = isFull;
-    board.getTick = getTick;
+    board.isRecording = isRecording;
     
     /////////////////
     
@@ -53,9 +53,9 @@ function BoardCtrl(Time, Storage, Ticker) {
             width: getWorkedRate() + '%'
         };
     }
-    
-    function getTick() {
-        return Ticker.tick;
+
+    function isRecording() {
+        return Ticker.isRecording();
     }
 }
 

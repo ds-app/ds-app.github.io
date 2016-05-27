@@ -19,6 +19,22 @@ body {
 }
 
 
+.blink {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% { opacity: .3; }
+}
+
+.on {
+  animation: doing 1s linear infinite;
+}
+
+@keyframes doing {
+  50% { background-color: #C05B4B; }
+}
+
 .tick {
   opacity: .7;
 }
@@ -105,10 +121,6 @@ body {
   opacity: .7;
   
   @include vendor-prefix(box-shadow, #4a4742 0 2px 2px);
-  
-  &.on {
-    background-color: #C05B4B;
-  }
 
   img {
     width: 60px;

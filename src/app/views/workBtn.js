@@ -9,13 +9,13 @@ function WorkBtnCtrl(Ticker) {
     
     ctrl.isRecording = Ticker.isRecording;
     ctrl.toggle = Ticker.toggle;
-    ctrl.getTick = getTick;
+    ctrl.isRecording = isRecording;
     
     ////////////////////////
 
 
-    function getTick() {
-        return Ticker.tick;
+    function isRecording() {
+        return Ticker.isRecording();
     }
 }
 
