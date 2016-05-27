@@ -47,10 +47,6 @@
       position: relative;
       height: .75em;
       
-      &.full {
-        opacity: .6;
-      }
-      
       .gauge {
         height: .75em;
         border-radius: 10px;
@@ -72,6 +68,16 @@
                           #465298 10px,
                           #465298 20px
           );
+          
+          &.full {
+            background: repeating-linear-gradient(
+                            45deg,
+                            #D48267,
+                            #D48267 10px,
+                            #C05B4B 10px,
+                            #C05B4B 20px
+            );
+          }
         }
       }
     }

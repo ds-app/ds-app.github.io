@@ -96,7 +96,7 @@ function SummariesCtrl($scope, Storage, Time, Util) {
                 return !isPast(info.time());
             }).head();
         
-        return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(), "minutes")) + "남음";
+        return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(), "minutes")) + " 남음";
     }
 }
 

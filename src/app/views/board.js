@@ -45,7 +45,15 @@ function BoardCtrl(Time, Storage, Ticker) {
     }
     
     function getWorkedRate() {
-        return Math.min(Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime()), 100);
+        var rate = Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime());
+        
+        if (rate <= 0) {
+            return 0;
+        } else if (rate <= 5) {
+            return 5;
+        } else {
+            return Math.min(rate, 100);
+        }
     }
 
     function getWorkedGauge() {

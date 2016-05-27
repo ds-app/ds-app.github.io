@@ -14,9 +14,9 @@
     </div>
     <div class="time-gauge">
         <div class="gauge-label" ng-class="{'blink': board.isRecording()}">{{board.getTotalWorkedTime() | time}}</div>
-        <div class="gauge-wrap" ng-class="{'full':board.isFull()}">
+        <div class="gauge-wrap">
             <div class="gauge"></div>
-            <div class="gauge" ng-style="board.getWorkedGauge()"></div>
+            <div class="gauge" ng-style="board.getWorkedGauge()" ng-class="{'full':board.isFull()}"></div>
         </div>
         <div class="gauge-label" ng-class="{'blink': board.isRecording()}">{{board.getRemainTime() | time | timeholder}}</div>
     </div>
