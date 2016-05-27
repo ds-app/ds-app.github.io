@@ -386,6 +386,7 @@
 	    svc.getWorkDate = getWorkDate;
 	    svc.getWorkingTime = getWorkingTime;
 	    svc.getTime = getTime;
+	    svc.getTypeName = getTypeName;
 
 	    svc.WORK_TYPE = WORK_TYPE;
 
@@ -457,7 +458,7 @@
 	        }
 	    }
 
-	    function dayOffTime(effective) {
+	    function holidayTime(effective) {
 
 	        if (effective < 240) {
 	            return 0;
@@ -509,7 +510,7 @@
 	        digested = digestTime(diff, work.type);
 	        working = workingTime(digested, work.type);
 	        effect = effectTime(digested, work.excepts);
-	        extra = work.type == WORK_TYPE.DAY_OFF ? dayOffTime(effect) : overtime(effect);
+	        extra = work.type == WORK_TYPE.HOLIDAY ? holidayTime(effect) : overtime(effect);
 
 	        return {
 	            total: diff,
@@ -518,6 +519,20 @@
 	            effective: effect,
 	            extra: extra
 	        };
+	    }
+
+	    function getTypeName(type) {
+	        switch (type) {
+	            case WORK_TYPE.HALF:
+	                return "Half";
+	            case WORK_TYPE.DAY_OFF:
+	                return "Day Off";
+	            case WORK_TYPE.HOLIDAY:
+	                return "Holiday";
+	            case WORK_TYPE.FULL:
+	            default:
+	                return "Full";
+	        }
 	    }
 	}
 
@@ -789,13 +804,6 @@
 	        }
 
 	        return Time.getTime(work.workDate, value).toISOString();
-
-	        /*var workDate = work.workDate,
-	            hm = moment(value, "HH:mm"),
-	            m = moment(time);
-	          m.hours(hm.hours());
-	        m.minutes(hm.minutes());
-	          return m.toISOString();*/
 	    }
 
 	    function setFirst(value) {
@@ -1155,6 +1163,7 @@
 
 	    summaries.flip = true;
 	    summaries.list = getInfo();
+	    summaries.isPast = isPast;
 
 	    $scope.$watch(function () {
 	        return today.type;
@@ -1186,6 +1195,10 @@
 
 	    function getExceptTime() {
 	        return _.sumBy(today.excepts, 'time');
+	    }
+
+	    function isPast(time) {
+	        return moment().isSameOrAfter(time);
 	    }
 	}
 
@@ -1260,6 +1273,7 @@
 	    work.toggle = toggle;
 	    work.getDate = getDate;
 	    work.isToday = isToday;
+	    work.getTypeName = getTypeName;
 
 	    //////////////////////////////
 
@@ -1276,6 +1290,10 @@
 
 	    function isToday() {
 	        return today;
+	    }
+
+	    function getTypeName() {
+	        return Time.getTypeName(works.type);
 	    }
 	}
 
