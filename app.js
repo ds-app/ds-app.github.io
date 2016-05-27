@@ -670,7 +670,15 @@
 	    }
 
 	    function getWorkedRate() {
-	        return Math.min(Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime()), 100);
+	        var rate = Math.floor(getTotalWorkedTime() * 100 / getFullWorkingTime());
+
+	        if (rate <= 0) {
+	            return 0;
+	        } else if (rate <= 5) {
+	            return 5;
+	        } else {
+	            return Math.min(rate, 100);
+	        }
 	    }
 
 	    function getWorkedGauge() {
@@ -1207,7 +1215,7 @@
 	            return !isPast(info.time());
 	        }).head();
 
-	        return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(), "minutes")) + "남음";
+	        return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(), "minutes")) + " 남음";
 	    }
 	}
 
