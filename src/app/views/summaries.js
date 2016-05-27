@@ -47,7 +47,7 @@ var HOLI_INFO = [{
 
 
 /* @ngInject */
-function SummariesCtrl($scope, Storage, Time) {
+function SummariesCtrl($scope, Storage, Time, Util) {
     var summaries = this,
         today = Storage.today(),
         WORK_TYPE = Time.WORK_TYPE;
@@ -55,6 +55,7 @@ function SummariesCtrl($scope, Storage, Time) {
     summaries.flip = true;
     summaries.list = getInfo();
     summaries.isPast = isPast;
+    summaries.message = getMessage;
     
     $scope.$watch(() => today.type, () => {
         summaries.list = getInfo();
@@ -88,6 +89,14 @@ function SummariesCtrl($scope, Storage, Time) {
     
     function isPast(time) {
         return moment().isSameOrAfter(time);
+    }
+    
+    function getMessage() {
+        var fast = _(summaries.list).filter(info => {
+                return !isPast(info.time());
+            }).head();
+        
+        return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(), "minutes")) + "남음";
     }
 }
 

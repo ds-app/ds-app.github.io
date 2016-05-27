@@ -1,4 +1,10 @@
 .summaries {
+  
+  .message {
+    font-size: .9em;
+    text-align: center;
+  }
+  
   .info {
     font-size: .8em;
     
@@ -14,7 +20,7 @@
       }
       
       &:nth-child(6) {
-        border-top: #F2F2F2 2px dotted;
+        border-top: #7F9D90 2px dotted;
         margin-top: .5em;
         padding-top: .5em;
       }
