@@ -315,7 +315,6 @@
 	        job;
 
 	    var svc = {
-	        tick: false,
 	        isRecording: function isRecording() {
 	            return _isRecording;
 	        },
@@ -329,7 +328,7 @@
 	    function getTicker(sec) {
 	        return rx.Observable.interval(sec).map(function () {
 	            return moment().startOf('minute');
-	        });
+	        }).distinct();
 	    }
 
 	    function toggle() {
@@ -351,7 +350,6 @@
 	                    today.last = m.toISOString();
 	                    Storage.update(today);
 	                    Storage.status(Status.ON);
-	                    svc.tick = !svc.tick;
 	                });
 	            }
 	        });
@@ -361,7 +359,6 @@
 	        job && job.dispose();
 	        Storage.status(Status.OFF);
 	        _isRecording = false;
-	        svc.tick = false;
 	    }
 	}
 
@@ -624,7 +621,7 @@
 	    board.getRemainTime = getRemainTime;
 	    board.getWorkedGauge = getWorkedGauge;
 	    board.isFull = isFull;
-	    board.getTick = getTick;
+	    board.isRecording = isRecording;
 
 	    /////////////////
 
@@ -667,8 +664,8 @@
 	        };
 	    }
 
-	    function getTick() {
-	        return Ticker.tick;
+	    function isRecording() {
+	        return Ticker.isRecording();
 	    }
 	}
 
@@ -1307,12 +1304,12 @@
 
 	    ctrl.isRecording = Ticker.isRecording;
 	    ctrl.toggle = Ticker.toggle;
-	    ctrl.getTick = getTick;
+	    ctrl.isRecording = isRecording;
 
 	    ////////////////////////
 
-	    function getTick() {
-	        return Ticker.tick;
+	    function isRecording() {
+	        return Ticker.isRecording();
 	    }
 	}
 
