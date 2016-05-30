@@ -185,6 +185,7 @@
 	    WORKS_KEY = PREFIX + 'WORKS',
 	    LABELS_KEY = PREFIX + 'LABELS',
 	    STATUS_KEY = PREFIX + 'STATUS',
+	    LAST_KEY = PREFIX + 'LAST',
 	    DEFAULT_LABELS = [{
 	    name: "기타"
 	}, {
@@ -226,6 +227,24 @@
 	            $localStorage.setItem(STATUS_KEY, value);
 	        } else {
 	            return $localStorage.getItem(STATUS_KEY) || Status.OFF;
+	        }
+	    }
+
+	    function last(value) {
+	        if (value) {
+	            $localStorage.setItem(LAST_KEY, value);
+	        } else {
+	            var stored = $localStorage.getItem(LAST_KEY);
+
+	            if (!stored) {
+	                return;
+	            }
+
+	            if (Time.getWorkDate(stored) == Time.getWorkDate()) {
+	                return stored;
+	            } else {
+	                $localStorage.removeItem(LAST_KEY);
+	            }
 	        }
 	    }
 
@@ -782,11 +801,20 @@
 	    excepts.addLap = addLap;
 	    excepts.add = add;
 	    excepts.remove = remove;
-	    excepts.flip = true;
 	    excepts.labelFilter = labelFilter;
+	    excepts.flip = true;
 
-	    $scope.$watch('work.flip', close);
-	    $scope.$watch('week.edit', close);
+	    if ($scope.main.flag && $scope.work.isToday()) {
+	        excepts.flip = false;
+	        $scope.main.flag = false;
+	    }
+
+	    $scope.$watch('work.flip', function (n) {
+	        return n && close();
+	    });
+	    $scope.$watch('week.edit', function (n) {
+	        return n && close();
+	    });
 	    $scope.$watch(function () {
 	        return work.first;
 	    }, adjust);
@@ -805,7 +833,7 @@
 	        return _.sumBy(work.excepts, 'time');
 	    }
 
-	    function setTime(value, time) {
+	    function setTime(value) {
 
 	        if (!value) {
 	            return;
@@ -824,11 +852,9 @@
 	        return Storage.update(work);
 	    }
 
-	    function close(n) {
-	        if (!n) {
-	            excepts.modify = false;
-	            excepts.flip = true;
-	        }
+	    function close() {
+	        excepts.modify = false;
+	        excepts.flip = true;
 	    }
 
 	    function addLap(lap) {
@@ -1038,14 +1064,22 @@
 
 	"use strict";
 
-	MainCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsMain", MainDirective);
+	MainCtrl.$inject = ["$rootScope", "Storage"];__webpack_require__(1).directive("dsMain", MainDirective);
 
 	/* @ngInject */
-	function MainCtrl(Storage) {
+	function MainCtrl($rootScope, Storage) {
 
 	    var main = this;
 
 	    main.data = Storage.load();
+	    main.today = today;
+
+	    ////////////////////////////
+
+	    function today() {
+	        main.flag = true;
+	        $rootScope.$emit("$today");
+	    }
 	}
 
 	/* @ngInject */
@@ -1207,7 +1241,7 @@
 	    }
 
 	    function isPast(time) {
-	        return moment().isSameOrAfter(time);
+	        return moment(today.last).isSameOrAfter(time);
 	    }
 
 	    function getMessage() {
@@ -1215,7 +1249,11 @@
 	            return !isPast(info.time());
 	        }).head();
 
-	        return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(), "minutes")) + " 남음";
+	        if (fast) {
+	            return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(today.last), "minutes")) + " 남음";
+	        }
+
+	        return "WORKED OVER";
 	    }
 	}
 
@@ -1235,10 +1273,10 @@
 
 	"use strict";
 
-	WeekCtrl.$inject = ["Storage"];__webpack_require__(1).directive("dsWeek", WeekDirective);
+	WeekCtrl.$inject = ["$rootScope", "Storage"];__webpack_require__(1).directive("dsWeek", WeekDirective);
 
 	/* @ngInject */
-	function WeekCtrl(Storage) {
+	function WeekCtrl($rootScope, Storage) {
 	    var week = this;
 
 	    week.toggle = toggle;
@@ -1246,6 +1284,10 @@
 	    week.labels = Storage.getLabels();
 	    week.more = more;
 	    week.flip = true;
+
+	    $rootScope.$on("$today", function (e) {
+	        week.edit = false;
+	    });
 
 	    ////////////////////////////
 
@@ -1277,16 +1319,17 @@
 
 	"use strict";
 
-	WorkCtrl.$inject = ["$scope", "Time", "Util"];__webpack_require__(1).directive("dsWork", WorkDirective);
+	WorkCtrl.$inject = ["$rootScope", "$scope", "Time", "Util"];__webpack_require__(1).directive("dsWork", WorkDirective);
 
 	/* @ngInject */
-	function WorkCtrl($scope, Time, Util) {
+	function WorkCtrl($rootScope, $scope, Time, Util) {
 	    var work = this,
 	        works = $scope.$eval('works'),
 	        today = works.workDate == Time.getWorkDate();
 
 	    work.work = works;
 	    work.flip = !today;
+	    work.token = false;
 	    work.toggle = toggle;
 	    work.getDate = getDate;
 	    work.isToday = isToday;
