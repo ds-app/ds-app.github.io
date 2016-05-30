@@ -6,6 +6,7 @@ var PREFIX = 'DONSU@2.0-',
     WORKS_KEY = PREFIX + 'WORKS',
     LABELS_KEY = PREFIX + 'LABELS',
     STATUS_KEY = PREFIX + 'STATUS',
+    LAST_KEY = PREFIX + 'LAST',
     DEFAULT_LABELS = [
         {
             name: "기타"
@@ -57,6 +58,24 @@ function Storage($localStorage, Week, Time) {
             $localStorage.setItem(STATUS_KEY, value);
         } else {
             return $localStorage.getItem(STATUS_KEY) || Status.OFF;
+        }
+    }
+    
+    function last(value) {
+        if (value) {
+            $localStorage.setItem(LAST_KEY, value);
+        } else {
+            var stored = $localStorage.getItem(LAST_KEY);
+            
+            if (!stored) {
+                return;
+            }
+            
+            if (Time.getWorkDate(stored) == Time.getWorkDate()) {
+                return stored;
+            } else {
+                $localStorage.removeItem(LAST_KEY);
+            }
         }
     }
 

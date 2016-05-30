@@ -4,11 +4,19 @@ require("app")
 
 
 /* @ngInject */
-function MainCtrl(Storage) {
+function MainCtrl($rootScope, Storage) {
 
     var main = this;
     
     main.data = Storage.load();
+    main.today = today;
+    
+    ////////////////////////////
+    
+    function today() {
+        main.flag = true;
+        $rootScope.$emit("$today");
+    }
 }
 
 

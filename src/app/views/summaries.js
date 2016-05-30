@@ -88,7 +88,7 @@ function SummariesCtrl($scope, Storage, Time, Util) {
     }
     
     function isPast(time) {
-        return moment().isSameOrAfter(time);
+        return moment(today.last).isSameOrAfter(time);
     }
     
     function getMessage() {
@@ -96,7 +96,11 @@ function SummariesCtrl($scope, Storage, Time, Util) {
                 return !isPast(info.time());
             }).head();
         
-        return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(), "minutes")) + " 남음";
+        if (fast) {
+            return "" + fast.title + " 까지 " + Util.time(moment(fast.time()).diff(moment(today.last), "minutes")) + " 남음";
+        }
+        
+        return "WORKED OVER";
     }
 }
 

@@ -4,13 +4,14 @@ require("app")
 
 
 /* @ngInject */
-function WorkCtrl($scope, Time, Util) {
+function WorkCtrl($rootScope, $scope, Time, Util) {
     var work = this,
         works = $scope.$eval('works'),
         today = works.workDate == Time.getWorkDate();
 
     work.work = works;
     work.flip = !today;
+    work.token = false;
     work.toggle = toggle;
     work.getDate = getDate;
     work.isToday = isToday;

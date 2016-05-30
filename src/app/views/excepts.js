@@ -14,11 +14,16 @@ function ExceptsCtrl($scope, Time, Util, Storage) {
     excepts.addLap = addLap;
     excepts.add = add;
     excepts.remove = remove;
-    excepts.flip = true;
     excepts.labelFilter = labelFilter;
+    excepts.flip = true;
     
-    $scope.$watch('work.flip', close);
-    $scope.$watch('week.edit', close);
+    if ($scope.main.flag && $scope.work.isToday()) {
+        excepts.flip = false;
+        $scope.main.flag = false;
+    }
+    
+    $scope.$watch('work.flip', n => n && close());
+    $scope.$watch('week.edit', n => n && close());
     $scope.$watch(() => work.first, adjust);
     $scope.$watch(() => work.last, adjust);
 
@@ -33,7 +38,7 @@ function ExceptsCtrl($scope, Time, Util, Storage) {
         return _.sumBy(work.excepts, 'time');
     }
     
-    function setTime(value, time) {
+    function setTime(value) {
         
         if (!value) {
             return;
@@ -52,11 +57,9 @@ function ExceptsCtrl($scope, Time, Util, Storage) {
         return Storage.update(work);
     }
     
-    function close(n) {
-        if (!n) {
-            excepts.modify = false;
-            excepts.flip = true;
-        }
+    function close() {
+        excepts.modify = false;
+        excepts.flip = true;
     }
 
     function addLap(lap) {

@@ -4,7 +4,7 @@ require("app")
 
 
 /* @ngInject */
-function WeekCtrl(Storage) {
+function WeekCtrl($rootScope, Storage) {
     var week = this;
     
     week.toggle = toggle;
@@ -12,6 +12,10 @@ function WeekCtrl(Storage) {
     week.labels = Storage.getLabels();
     week.more = more;
     week.flip = true;
+
+    $rootScope.$on("$today", (e) => {
+        week.edit = false;
+    });
     
     ////////////////////////////
     
