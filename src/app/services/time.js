@@ -45,7 +45,7 @@ function TimeService() {
 
     function digestTime(time, type) {
 
-        if (type != WORK_TYPE.DAY_OFF) {
+        if (type != WORK_TYPE.HOLIDAY) {
             if (time < 0) {
                 return 0;
             } else if (time < 240) {
@@ -64,7 +64,7 @@ function TimeService() {
     }
 
     function workingTime(digested, type) {
-        if (type == WORK_TYPE.DAY_OFF) {
+        if (type == WORK_TYPE.HOLIDAY) {
             return 0;
         } else  {
             return Math.max(Math.min(digested, 720), 0);
