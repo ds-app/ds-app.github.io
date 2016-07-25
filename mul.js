@@ -154,8 +154,6 @@ function box() {
         }
     }
     
-    popup.find("#batDate").val(""+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate());
-    
     popup.on("click", "#batReserve", action);
     popup.on("click", "#batClose", closer);
     popup.find("input[type=text]").css({ width: "80%" });
