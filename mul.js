@@ -128,7 +128,7 @@ function box() {
         '<p><label for="batStart">시작시</label> &nbsp; <input id="batStart" placeholder="07:00 - 30분 단위" type="text"/></p>' +
         '<p><label for="batEnd">종료시</label> &nbsp; <input id="batEnd" placeholder="24:00 - 30분 단위" type="text"/></p>' +
         '<p><label for="batDate">예약일</label> &nbsp; <input id="batDate" placeholder="2016-07 or 2016-07-24" type="text"/></p>' +
-        '<p><label for="batPassword">비밀키</label> &nbsp; <input id="batPassword" placeholder="취소 비밀번호" type="text"/></p>' +
+        '<p><label for="batPassword">취소키</label> &nbsp; <input id="batPassword" placeholder="취소 비밀번호" type="text"/></p>' +
         '<p><input id="batReserve" type="button" value="예약"/> &nbsp; <input id="batClose" type="button" value="닫기"/></p>' +
         '</div>' +
         '</div>' +
