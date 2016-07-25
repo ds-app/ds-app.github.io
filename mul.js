@@ -144,10 +144,14 @@ function box() {
         historicUser = JSON.parse(localStorage.getItem("embt.meeting.user"));
         historicFloor = localStorage.getItem("embt.meeting.floor");
         
-        popup.find("#batUser").val(historicUser.name);
-        popup.find("#batPhone").val(historicUser.phone);
-        popup.find("#batRoom").val(historicFloor + "_");
+        if (historicUser) {
+            popup.find("#batUser").val(historicUser.name);
+            popup.find("#batPhone").val(historicUser.phone);
+        }
         
+        if (historicFloor) {
+            popup.find("#batRoom").val(historicFloor + "_");
+        }
     }
     
     popup.find("#batDate").val(""+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate());
