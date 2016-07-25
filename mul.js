@@ -141,8 +141,8 @@ function box() {
         today = new Date();
     
     if (!!localStorage) {
-        historicUser = JSON.parse(localStorage.get("embt.meeting.user"));
-        historicFloor = localStorage.get("embt.meeting.floor");
+        historicUser = JSON.parse(localStorage.getItem("embt.meeting.user"));
+        historicFloor = localStorage.getItem("embt.meeting.floor");
         
         popup.find("#batUser").val(historicUser.name);
         popup.find("#batPhone").val(historicUser.phone);
