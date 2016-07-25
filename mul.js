@@ -114,6 +114,7 @@ function ui() {
 
 
 function box() {
+    
     var $el = angular.element,
         popup = $el('' +
         '<div class="modal fade in" style="display:block;">' +
@@ -134,8 +135,23 @@ function box() {
         '</div>' +
         '</div>' +
         ''),
-        overlay = $el('<div class="fade modal-backdrop in"></div>');
-
+        overlay = $el('<div class="fade modal-backdrop in"></div>'),
+        historicUser,
+        historicFloor,
+        today = new Date();
+    
+    if (!!localStorage) {
+        historicUser = JSON.parse(localStorage.get("embt.meeting.user"));
+        historicFloor = localStorage.get("embt.meeting.floor");
+        
+        popup.find("#batUser").val(historicUser.name);
+        popup.find("#batPhone").val(historicUser.phone);
+        popup.find("#batRoom").val(historicFloor + "_");
+        
+    }
+    
+    popup.find("#batDate").val(""+today.getFullYear()+"-"+(today.getMonth()+1)+"-"+today.getDate());
+    
     popup.on("click", "#batReserve", action);
     popup.on("click", "#batClose", closer);
     popup.find("input[type=text]").css({ width: "80%" });
